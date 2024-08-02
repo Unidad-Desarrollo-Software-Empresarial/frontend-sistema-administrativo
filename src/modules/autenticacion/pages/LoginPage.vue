@@ -1,8 +1,7 @@
 <template>
     <LoginLayout>
         <div>
-            <div class="bg-slate-400 p-8 rounded-lg shadow-lg max-w-md w-full">
-                <h2 class="text-2xl font-bold mb-6 text-center">Login</h2>
+            <div class="bg-slate-300 bg-opacity-30 p-8 rounded-lg shadow-lg max-w-md w-full backdrop-filter backdrop-blur-lg">                <h2 class="text-2xl font-bold mb-6 text-center">Login</h2>
                 <form @submit.prevent="submit">
                     <div class="mb-4">
                         <label for="username" class="block text-gray-700 text-sm font-bold mb-2">Username</label>
