@@ -17,7 +17,8 @@
     "@tanstack/vue-query": "^5.51.17",
     "axios": "^1.7.3",
     "flowbite": "^2.4.1",
-    "pinia": "^2.1.7",
+    "pinia": "^2.2.1",
+    "pinia-plugin-persistedstate": "^3.2.1",
     "vue": "^3.4.29",
     "vue-router": "^4.3.3"
   },
