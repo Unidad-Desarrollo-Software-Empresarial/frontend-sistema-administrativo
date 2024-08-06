@@ -1,7 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import autenticacionRoutes from '../modules/autenticacion/routes';
 import dashboardRoutes from '../modules/dashboard/routes';
-import perfilesRoutes from '../modules/perfiles/routes'
+import perfilesRoutes from '../modules/perfiles/routes';
+import curriculumRoutes from '../modules/curriculum/routes';
 
 const router = createRouter({
   history: createWebHistory(/*import.meta.env.BASE_URL*/),
@@ -9,13 +10,12 @@ const router = createRouter({
     ...autenticacionRoutes,
     ...dashboardRoutes,
     ...perfilesRoutes,
+    ...curriculumRoutes,
     {
       path: '/:catchAll(.*)',
       name: 'not-found',
       component: () => import('../components/ui/NotFoundComponent.vue'),
     },
-
-   
   ],
 });
 

@@ -1,6 +1,8 @@
 <template>
     <DashboardLayout>
-        <p>Esta es la dashboard Page</p>
+        <div class="min-h-screen bg-gray-100 p-4">
+        <p>Dashboard</p>
+        </div>
     </DashboardLayout>
 </template>
 
