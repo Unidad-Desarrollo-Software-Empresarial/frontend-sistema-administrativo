@@ -4,9 +4,9 @@
             <div class="flex items-center justify-between">
                 <!-- Logo -->
                 <div class="flex items-center justify-start rtl:justify-end">
-                    <button data-drawer-target="logo-sidebar" data-drawer-toggle="logo-sidebar"
+                    <button @click="toggleSidebar"
                         aria-controls="logo-sidebar" type="button"
-                        class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
+                        class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg lg:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
                         <span class="sr-only">Open sidebar</span>
                         <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
                             xmlns="http://www.w3.org/2000/svg">
@@ -15,7 +15,7 @@
                             </path>
                         </svg>
                     </button>
-                    <div @click="router.push({ name: 'dashboard', replace: true })" class="flex ms-2 md:me-24">
+                    <div @click="router.push({ name: 'dashboard', replace: true })" class="flex ms-2 md:me-24 cursor-pointer">
                         <img src="https://res.cloudinary.com/dx7qfps6d/image/upload/v1689608536/dev-deploys/eqayqo984zyobeq6zzxf.png"
                             class="h-11 me-3" alt="Puce Ibarra Logo" />
                     </div>
@@ -31,28 +31,21 @@
                                 <img class="w-8 h-8 rounded-full"
                                     src="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
                                     alt="user photo">
-
-
                             </button>
                         </div>
                         <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600"
                             id="dropdown-user">
                             <div class="px-4 py-3" role="none">
-                                <!-- <p class="text-sm text-gray-900 dark:text-white" role="none">
-                                    {{  store.nombre }}
-                                </p> -->
                                 <p class="text-sm font-medium text-gray-900 truncate dark:text-gray-300" role="none">
                                     {{ store.nombre }}
                                 </p>
                             </div>
                             <ul class="py-1" role="none">
-
                                 <li>
                                     <div>
                                         <span
                                             class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:cursor-pointer dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
                                             role="menuitem">Cambiar tema</span>
-
                                     </div>
                                 </li>
                                 <li>
@@ -68,12 +61,11 @@
         </div>
     </nav>
 
-    <aside id="logo-sidebar"
-        class="fixed top-0 left-0 z-10 w-64 h-screen pt-20 transition-transform -translate-x-full bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
-        aria-label="Sidebar">
+    <aside :class="['fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform transform bg-white border-r border-gray-200 dark:bg-gray-800 dark:border-gray-700',
+        sidebarOpen ? 'translate-x-0' : '-translate-x-full', 'lg:translate-x-0']" aria-label="Sidebar">
         <div class="h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800">
             <ul class="space-y-2 font-medium">
-                <!-- -->
+                <!-- Rutas -->
                 <li v-for="(item, index) in rutas" :key="index">
                     <a @click="navigation(item.ruta)"
                         class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 hover:cursor-pointer dark:hover:bg-gray-700 group">
@@ -83,76 +75,69 @@
                         <ul>
                             <li v-for="(subItem, subIndex) in item.rutasHijas" :key="subIndex">
                                 <a @click="navigation(subItem.ruta)"
-                                    class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 hover:cursor-pointer dark:hover:bg-gray-700 group"><span
-                                        class="ms-4 font-thin">{{ subItem.nombre }}</span></a>
+                                    class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 hover:cursor-pointer dark:hover:bg-gray-700 group">
+                                    <span class="ms-4 font-thin">{{ subItem.nombre }}</span>
+                                </a>
                             </li>
                         </ul>
                     </div>
                 </li>
-                <!--  -->
             </ul>
         </div>
     </aside>
 
-    <div class="ml-64">
-        <div class="dark:border-gray-700 mt-14 ">
+    <div :class="['transition-all duration-300', sidebarOpen ? 'ml-0' : 'ml-0', 'lg:ml-64']">
+        <div class="dark:border-gray-700 mt-14">
             <slot />
         </div>
     </div>
-
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted, watchEffect } from 'vue';
 import { useAutenticacionStore } from '@/stores/use-autenticacion.store';
-import { initFlowbite } from 'flowbite';
-import { onMounted, ref, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
 import { useMenuRutas } from '../composable/use-menu-rutas';
 import { parseObjectRutas, removeRoutesOnLogout } from '../helpers/parse-object-rutas';
 import type { RutaInterface } from '../dto/menu-rutas-response.dto';
 import { personalDb, estudiantesDb } from '@/indexed-db';
+import { initFlowbite } from 'flowbite';
 
+const store = useAutenticacionStore();
+const router = useRouter();
+const sidebarOpen = ref(false);
 
-onMounted(() => {
-    initFlowbite()
-})
-
-const store = useAutenticacionStore()
-const router = useRouter()
+const toggleSidebar = () => {
+    sidebarOpen.value = !sidebarOpen.value;
+};
 
 const logout = () => {
-    store.onLogout()
-    // agregar el desmontado de las rutas
-    removeRoutesOnLogout(router)
-    estudiantesDb.closeDbEstudiantes()
-    personalDb.closeDbPersonal()
-    router.push({ name: 'login', replace: true })
-}
+    store.onLogout();
+    removeRoutesOnLogout(router);
+    estudiantesDb.closeDbEstudiantes();
+    personalDb.closeDbPersonal();
+    router.push({ name: 'login', replace: true });
+};
 
-const autenticacionStorage = JSON.parse(localStorage.getItem('autenticacion') || '{}')
-
-const query = useMenuRutas(autenticacionStorage.rolId)
-// console.log(query?.data);
-
-const rutas = ref<RutaInterface[]>([])
-
+const autenticacionStorage = JSON.parse(localStorage.getItem('autenticacion') || '{}');
+const query = useMenuRutas(autenticacionStorage.rolId);
+const rutas = ref<RutaInterface[]>([]);
 
 onMounted(() => {
-    rutas.value = parseObjectRutas(query?.data.value?.rutas ?? [], router)
-    personalDb.openDbPersonal()
-    estudiantesDb.openDbEstudiantes()
-    store.updateRutas(rutas.value)
-})
+    initFlowbite();
+    rutas.value = parseObjectRutas(query?.data.value?.rutas ?? [], router);
+    personalDb.openDbPersonal();
+    estudiantesDb.openDbEstudiantes();
+    store.updateRutas(rutas.value);
+});
 
 watchEffect(() => {
-    rutas.value = parseObjectRutas(query?.data.value?.rutas ?? [], router)
-    store.updateRutas(rutas.value)
-})
+    rutas.value = parseObjectRutas(query?.data.value?.rutas ?? [], router);
+    store.updateRutas(rutas.value);
+});
 
 const navigation = (routeName?: string) => {
-    if (!routeName || routeName === '') return
-    router.push({ name: routeName })
-}
+    if (!routeName || routeName === '') return;
+    router.push({ name: routeName });
+};
 </script>
-
-<style scoped></style>
