@@ -41,7 +41,7 @@
                 <div class="border border-gray-200 p-4 rounded-lg shadow">
                     <div class="flex justify-between items-center">
                         <div>
-                            <span class="text-xs text-red-500">Pendiente</span>
+                            <span class="text-xs text-green-500">Activo</span>
                             <p class="font-semibold text-gray-800">PRACTICANTE PRE PROFESIONAL DE BUSINESS
                                 EXCELLENCE PRUEBA</p>
                         </div>
