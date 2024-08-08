@@ -1,23 +1,35 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import { createRouter, createWebHistory } from 'vue-router';
+import autenticacionRoutes from '../modules/autenticacion/routes';
+import dashboardRoutes from '../modules/dashboard/routes';
+import perfilesRoutes from '../modules/perfiles/routes';
+import curriculumRoutes from '../modules/curriculum/routes';
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHistory(/*import.meta.env.BASE_URL*/),
   routes: [
+    ...autenticacionRoutes,
+    ...dashboardRoutes,
+    ...perfilesRoutes,
+    ...curriculumRoutes,
     {
-      path: '/',
-      name: 'home',
-      component: HomeView
+      path: '/:catchAll(.*)',
+      name: 'not-found',
+      component: () => import('../components/ui/NotFoundComponent.vue'),
     },
-    {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue')
-    }
-  ]
-})
+  ],
+});
 
-export default router
+// router.beforeEach((to, from, next) => {
+//   if (to.matched.some((record) => record.meta.requiresAuth)) {
+//     const autenticacionLocalStorage = JSON.parse(localStorage.getItem('autenticacion') || '{}');
+//     if (!autenticacionLocalStorage['loginStatus']) {
+//       next({ name: 'login' });
+//     } else {
+//       next();
+//     }
+//   } else {
+//     next();
+//   }
+// });
+
+export default router;
