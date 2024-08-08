@@ -89,6 +89,7 @@
     <div :class="['transition-all duration-300', sidebarOpen ? 'ml-0' : 'ml-0', 'lg:ml-64']">
         <div class="dark:border-gray-700 mt-14">
             <slot />
+            
         </div>
     </div>
 </template>
