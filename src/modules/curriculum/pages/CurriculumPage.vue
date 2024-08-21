@@ -1,6 +1,6 @@
 <template>
   <DashboardLayout>
-    <form @submit.prevent="handleSubmit" action="/nueva-pagina" method="POST">
+    <form @submit.prevent="openModal" action="/nueva-pagina" method="POST">
 
       <div class="relative min-h-screen">
         <div class="w-full bg-white shadow">
@@ -91,12 +91,17 @@
 
 
     </form>
+
+    <!-- Modal de configuración avanzada -->
+    <AdvancedConfigModal :isOpen="isModalOpen" @close="closeModal" @save="handleSave" />
+
   </DashboardLayout>
 </template>
 
 <script setup>
 
 import { useRouter } from 'vue-router';
+import { ref } from 'vue';
 
 import DashboardLayout from '@/modules/dashboard/layouts/DashboardLayout.vue';
 import PersonalInfoSection from '@/modules/curriculum/componentes/PersonalInfoSection.vue';
@@ -106,15 +111,26 @@ import ProExperience from '../componentes/ProExperience.vue';
 import LanguageSection from '../componentes/LanguageSection.vue';
 import SkillsKnowledge from '../componentes/SkillsKnowledge.vue';
 import FilterQuestionsSection from '../componentes/FilterQuestionsSection.vue';
+import AdvancedConfigModal from '../componentes/AdvancedConfigModal.vue';
 
 
 // Save Button
 
 const router = useRouter();
+const isModalOpen = ref(false);
 
-const handleSubmit = () => {
+const openModal = () => {
+  isModalOpen.value = true;
+};
 
+const closeModal = () => {
+  isModalOpen.value = false;
+};
+
+const handleSave = (settings) => {
+  console.log(settings); // Manejar los settings si es necesario
+  closeModal();
   router.push('/perfil-settings');
-}
+};
 
 </script>
