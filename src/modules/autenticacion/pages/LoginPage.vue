@@ -1,7 +1,9 @@
 <template>
     <LoginLayout>
         <div>
-            <div class="bg-slate-300 bg-opacity-30 p-8 rounded-lg shadow-lg max-w-md w-full backdrop-filter backdrop-blur-lg">                <h2 class="text-2xl font-bold mb-6 text-center">Login</h2>
+            <div
+                class="bg-slate-300 bg-opacity-30 p-8 rounded-lg shadow-lg max-w-md w-full backdrop-filter backdrop-blur-lg">
+                <h2 class="text-2xl font-bold mb-6 text-center">Login</h2>
                 <form @submit.prevent="submit">
                     <div class="mb-4">
                         <label for="username" class="block text-gray-700 text-sm font-bold mb-2">Username</label>
@@ -75,6 +77,7 @@ import LoginLayout from '../layouts/LoginLayout.vue';
 import { useAutenticacionStore } from '@/stores/use-autenticacion.store';
 import { useLogin } from '../composables/use-login';
 import { useRouter } from 'vue-router';
+import type { LoginResponseDto } from '../dto/login-response.dto';
 
 const store = useAutenticacionStore()
 const router = useRouter()
@@ -84,21 +87,35 @@ const username = ref<string>();
 const password = ref<string>();
 
 const submit = async () => {
+    console.log(username.value);
+    console.log(password.value);
     try {
-        const { success, nombre, rolId, message } = await query.mutateAsync(
-            { 
-                username: username.value, 
-                password: password.value 
+        const { usuario, rol, rutas, token }: LoginResponseDto = await query.mutateAsync(
+            {
+                username: username.value,
+                password: password.value
             }
-        )
-        if(query.isSuccess && success) {
-            store.onLogginSuccess(success, nombre, rolId, message)
-            router.push({ name: 'dashboard', replace: true })
+        );
+
+        // Validación de éxito basada en la presencia de datos clave
+        if (usuario && rol && rutas && token) {
+
+            localStorage.setItem('usuarioId', usuario.usu_id.toString());
+            localStorage.setItem('usuario', usuario.usu_usuario);
+            localStorage.setItem('contraseña', usuario.usu_password);
+            localStorage.setItem('token', token);
+
+            store.onLogginSuccess(true, usuario.usu_nombres, rol.rol_id, "Login exitoso", rutas, token);
+            router.push({ name: 'dashboard', replace: true });
+        } else {
+            throw new Error('Datos incompletos en la respuesta');
         }
     } catch (error) {
-        store.onLogginError(`${error}`)
+        store.onLogginError(`${error}`);
     }
-}
+};
+
+
 
 const closeModal = () => {
     store.closeModal()
