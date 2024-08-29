@@ -3,6 +3,7 @@ import autenticacionRoutes from '../modules/autenticacion/routes';
 import dashboardRoutes from '../modules/dashboard/routes';
 import perfilesRoutes from '../modules/perfiles/routes';
 import curriculumRoutes from '../modules/curriculum/routes';
+import KnowledgeRoutes from '@/modules/conocimiento/routes';
 
 const router = createRouter({
   history: createWebHistory(/*import.meta.env.BASE_URL*/),
@@ -11,6 +12,7 @@ const router = createRouter({
     ...dashboardRoutes,
     ...perfilesRoutes,
     ...curriculumRoutes,
+    ...KnowledgeRoutes,
     {
       path: '/:catchAll(.*)',
       name: 'not-found',

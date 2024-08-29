@@ -97,7 +97,7 @@ const submit = async () => {
             }
         );
 
-        // Validación de éxito basada en la presencia de datos clave
+        
         if (usuario && rol && rutas && token) {
 
             localStorage.setItem('usuarioId', usuario.usu_id.toString());
@@ -114,7 +114,6 @@ const submit = async () => {
         store.onLogginError(`${error}`);
     }
 };
-
 
 
 const closeModal = () => {

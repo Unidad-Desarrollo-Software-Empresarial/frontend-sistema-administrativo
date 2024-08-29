@@ -76,7 +76,7 @@
               </div>
   
               <div class="bg-white shadow p-4 rounded-lg flex-1">
-                <div class="flex justify-between items-center mb-2 hover:bg-gray-200 transition-colors duration-200 p-2 rounded">
+                <div @click="irAKnowledge" class="flex justify-between items-center mb-2 hover:bg-gray-200 transition-colors duration-200 p-2 rounded">
                   <h3 class="text-sm font-semibold text-gray-700">CONOCIMIENTO</h3>
                   <span class="text-blue-500">Pendiente</span>
                 </div>
@@ -125,5 +125,10 @@
   const irACurriculum = () => {
     router.replace('/curriculum');
   };
+
+  const irAKnowledge = () => {
+    router.replace('/conocimiento');
+  };
+
   </script>
   

@@ -14,12 +14,10 @@ export const useLogin = () => {
         // apiKey: 'documental',
         // apiSecret: 'Documental2021file'
       });
-
-      
+ 
       const { usuario, rol, rutas, token } = response.data;
 
-     
-      if (!usuario || !rol || !rutas || !token) {
+    if (!usuario || !rol || !rutas || !token) {
         throw new Error('La respuesta del servidor es incompleta.');
       }
       
