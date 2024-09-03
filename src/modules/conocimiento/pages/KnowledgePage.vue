@@ -1,36 +1,39 @@
 <template>
   <DashboardLayout>
-    <div class="relative min-h-screen p-8 bg-gray-100">
-      
-      <!-- Título, subtítulo y enlace de regreso -->
-      <div class="mb-8">
-        <div class="flex items-center text-gray-500 mt-2">
-          <a 
-            href="/perfil-settings" 
-            class="flex items-center text-blue-500 hover:text-blue-600 underline"
-          >
-            <!-- Ícono de flecha usando SVG -->
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+    <div class="flex-1 flex flex-col">
+
+      <div class="flex items-center justify-between p-4 border-b bg-gray-50">
+        <div class="flex items-center">
+          <!-- Flecha para regresar -->
+          <button @click="goBack" class="mr-2 text-gray-600 hover:text-gray-900">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+              stroke="currentColor" class="w-6 h-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
-            Regresar a configuración del perfil
-          </a>
+          </button>
+          <div>
+            <h1 class="text-xl font-semibold">Regresar a configuración del perfil</h1>
+            
+          </div>
         </div>
-        <h1 class="text-2xl font-bold text-gray-800 mt-2">Conocimiento</h1>
-        <p class="text-gray-500">Editor del perfil - DESARROLLADOR DE SOFTWARE</p>
+
       </div>
+      <!-- Título, subtítulo y enlace de regreso -->
 
       <!-- Mensaje principal -->
       <div class="bg-white p-6 shadow-md text-center mb-8">
         <p class="text-lg font-semibold text-gray-800">No tienes cuestionarios al momento.</p>
-        <p class="text-gray-500">Puedes seleccionar cuestionarios predefinidos de Allware o los que han creado otros usuarios.</p>
+        <p class="text-gray-500">Puedes seleccionar cuestionarios predefinidos de Allware o los que han creado otros
+          usuarios.</p>
         <p class="text-gray-500">También puedes crear un nuevo cuestionario personalizado.</p>
       </div>
 
       <!-- Botones para añadir cuestionarios -->
       <div class="flex justify-center space-x-4 mb-8">
-        <button class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 uppercase tracking-wide font-semibold">+ Cuestionario</button>
-        <button class="bg-teal-500 hover:bg-teal-600 text-white px-6 py-2 uppercase tracking-wide font-semibold">+ Cuestionario personalizado</button>
+        <button class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 uppercase tracking-wide font-semibold">+
+          Cuestionario</button>
+        <button class="bg-teal-500 hover:bg-teal-600 text-white px-6 py-2 uppercase tracking-wide font-semibold">+
+          Cuestionario personalizado</button>
       </div>
 
       <!-- Tarjetas de cuestionarios -->
@@ -56,8 +59,20 @@
 
 <script setup>
 
-// import { useRouter } from 'vue-router';
+import { useRouter } from 'vue-router';
 // import { ref } from 'vue';
 
 import DashboardLayout from '@/modules/dashboard/layouts/DashboardLayout.vue';
+
+import { onMounted } from 'vue';
+
+onMounted(() => {
+  window.scrollTo(0, 0);
+});
+
+const router = useRouter();
+const goBack = () => {
+    router.push({ name: 'perfil-settings' });
+};
+
 </script>

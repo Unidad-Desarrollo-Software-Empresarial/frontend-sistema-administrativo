@@ -7,12 +7,11 @@
           <!-- Encabezado -->
           <div class="flex justify-between items-center p-4 border-b border-gray-200">
             <div class="flex items-center space-x-2">
-              <button @click="goBack" class="text-gray-600 hover:text-gray-800">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24"
-                  stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
+              <button @click="goBack" class="mr-2 text-gray-600 hover:text-gray-900">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </button>
               <h1 class="text-xl font-semibold text-gray-800">Configura el match perfecto de Currículum</h1>
             </div>
             <button class="text-blue-600 hover:text-blue-800 font-semibold hidden">
@@ -25,10 +24,10 @@
           </div>
 
           <!-- Subtítulo -->
-          <div class="px-4 py-2 border-b border-gray-200 bg-gray-50">
+          <!-- <div class="px-4 py-2 border-b border-gray-200 bg-gray-50">
             <p class="text-sm text-gray-600">Edición del perfil - <span class="font-semibold">DESARROLLADOR DE
                 SOFTWARE</span></p>
-          </div>
+          </div> -->
 
           <!-- Contenido principal -->
           <div class="p-4">
@@ -131,6 +130,11 @@ const handleSave = (settings) => {
   console.log(settings); // Manejar los settings si es necesario
   closeModal();
   router.push('/perfil-settings');
+};
+
+
+const goBack = () => {
+    router.push({ name: 'perfil-settings' });
 };
 
 </script>
