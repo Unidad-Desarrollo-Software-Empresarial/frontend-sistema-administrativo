@@ -24,15 +24,13 @@
             <!-- Nombre -->
             <div class="mb-4">
               <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre</label>
-              <input type="text" id="nombre" class="mt-1 block w-full border-gray-300 rounded-md"
-                value="DESARROLLADOR DE SOFTWARE">
+              <input type="text" id="nombre" v-model="nombre"  class="mt-1 block w-full border-gray-300 rounded-md">
             </div>
             <!-- Nivel -->
             <div class="mb-4">
               <label for="nivel" class="block text-sm font-medium text-gray-700">Nivel del perfil</label>
-              <select id="nivel" class="mt-1 block w-full border-gray-300 rounded-md">
-                <option>MEDIO</option>
-              </select>
+              <input type="text" id="nombre" v-model="nivel"  class="mt-1 block w-full border-gray-300 rounded-md">
+
             </div>
             <!-- Descripción -->
             <div class="mb-4">
@@ -159,7 +157,7 @@
             <div class="flex justify-center space-x-6">
               <button @click="cerrarModal" class="text-blue-600 hover:underline">Permanecer</button>
               <button @click="irAPerfiles" class="text-blue-600 hover:underline">Perfiles</button>
-              <button class="text-blue-600 hover:underline">Lanzar proceso</button>
+              <button @click="irAProceso" class="text-blue-600 hover:underline">Lanzar proceso</button>
             </div>
 
             <button @click="cerrarModal" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">
@@ -179,6 +177,12 @@
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import DashboardLayout from '@/modules/dashboard/layouts/DashboardLayout.vue';
+import { usePerfilStore } from '@/stores/use-perfil.store';
+
+const perfilStore = usePerfilStore();
+const nombre = perfilStore.nombre;
+const nivel = perfilStore.nivel;
+const opciones = perfilStore.opciones;
 
 const router = useRouter();
 
@@ -200,6 +204,9 @@ const irAEntrevista = () => {
 
 const irAPerfiles = () => {
   router.replace('/perfiles');
+}
+const irAProceso = () => {
+  router.replace('/perfil-launch');
 }
 
 const pesoCurriculum = ref(10);

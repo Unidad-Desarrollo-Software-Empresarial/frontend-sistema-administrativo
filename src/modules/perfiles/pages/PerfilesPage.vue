@@ -130,10 +130,12 @@
                                                     class="block text-gray-700 text-sm font-bold mb-2">Nombre</label>
                                                 <input v-model="nombre" type="text" id="nombre" @input="limitarLetras"
                                                     class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                                    placeholder="Analista de Talento Humano" />
-                                                <div class="text-right text-sm text-gray-500 mt-1">{{ contarCaracteres }} /
+                                                    placeholder="Ej. Analista de Talento Humano" />
+                                                <div class="text-right text-sm text-gray-500 mt-1">{{ contarCaracteres
+                                                    }} /
                                                     150</div>
-                                                <p v-if="mensajeError" class="text-red-500 text-sm mt-1">{{ mensajeError }}
+                                                <p v-if="mensajeError" class="text-red-500 text-sm mt-1">{{ mensajeError
+                                                    }}
                                                 </p>
                                             </div>
 
@@ -142,17 +144,17 @@
                                                 <label class="block text-gray-700 text-sm font-bold mb-2">Nivel</label>
                                                 <div class="flex justify-around">
                                                     <label class="inline-flex items-center">
-                                                        <input type="radio" v-model="nivel" value="alto"
+                                                        <input type="radio" v-model="nivel" value="Alto"
                                                             class="form-radio text-blue-500">
                                                         <span class="ml-2">Alto</span>
                                                     </label>
                                                     <label class="inline-flex items-center">
-                                                        <input type="radio" v-model="nivel" value="medio"
+                                                        <input type="radio" v-model="nivel" value="Medio"
                                                             class="form-radio text-blue-500">
                                                         <span class="ml-2">Medio</span>
                                                     </label>
                                                     <label class="inline-flex items-center">
-                                                        <input type="radio" v-model="nivel" value="bajo"
+                                                        <input type="radio" v-model="nivel" value="Bajo"
                                                             class="form-radio text-blue-500">
                                                         <span class="ml-2">Bajo</span>
                                                     </label>
@@ -192,9 +194,9 @@
                                 </div>
                             </div>
                             <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                                <button type="submit"
+                                <button type="submit" @click="guardar"
                                     class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-500 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
-                                    Guardar
+                                    Guardar Perfil
                                 </button>
                                 <button @click="cerrarModal" type="button"
                                     class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
@@ -213,6 +215,7 @@
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import DashboardLayout from '@/modules/dashboard/layouts/DashboardLayout.vue';
+import { usePerfilStore } from '@/stores/use-perfil.store';
 
 const router = useRouter();
 const mostrarModal = ref(false);
@@ -241,18 +244,29 @@ const cerrarModal = () => {
 
 
 const guardar = () => {
+
+    perfilStore.setPerfil(nombre.value, nivel.value, opciones.value);
+
     console.log('Guardado', {
         nombre: nombre.value,
         nivel: nivel.value,
         opciones: opciones.value,
     });
-    cerrarModal(); 
+    cerrarModal();
 
-    
+
     setTimeout(() => {
         router.replace('/perfil-settings');
     }, 100);
 };
+
+
+//Guardar datos del perfil creado
+
+
+const perfilStore = usePerfilStore();
+
+
 </script>
 
 <style scoped></style>

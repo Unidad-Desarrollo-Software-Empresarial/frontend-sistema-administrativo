@@ -11,6 +11,11 @@ const routes: Array<RouteRecordRaw> = [
     name: 'perfil-settings',
     component: () => import('./pages/PerfilSettings.vue'),
   },
+  {
+    path: '/perfil-launch',
+    name: 'perfil-launch',
+    component: () => import('./pages/LaunchPage.vue'),
+  },
 ];
 
 export default routes;
