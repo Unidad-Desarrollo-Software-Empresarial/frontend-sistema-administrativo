@@ -21,16 +21,16 @@ export const parseObjectRutas = (rutas: RutaInterface[], router: Router) => {
       privilegio: 0,
       padre: 0,
     },
-    {
-      "id": 9,
-      "nombre": "Currículum",
-      "path": "/curriculum",
-      "ruta": "curriculum",
-      "component": "/modules/curriculum/pages/CurriculumPage.vue",
-      "indexeddb": 3,
-      "privilegio": 1,
-      "padre": 0
-    },
+    // {
+    //   "id": 9,
+    //   "nombre": "Currículum",
+    //   "path": "/curriculum",
+    //   "ruta": "curriculum",
+    //   "component": "/modules/curriculum/pages/CurriculumPage.vue",
+    //   "indexeddb": 3,
+    //   "privilegio": 1,
+    //   "padre": 0
+    // },
   ];
   
   loadIndexedData(rutas);
