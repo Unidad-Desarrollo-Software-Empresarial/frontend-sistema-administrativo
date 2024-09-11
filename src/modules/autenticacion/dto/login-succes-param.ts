@@ -1,5 +1,5 @@
-interface LoginSuccessParams {
-    nombreParam: string;
-    rolIdParam: number;
-    tokenParam: string;
-  }
+// interface LoginSuccessParams {
+//     nombreParam: string;
+//     rolIdParam: number;
+//     tokenParam: string;
+//   }

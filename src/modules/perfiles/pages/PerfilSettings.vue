@@ -182,7 +182,7 @@ import { usePerfilStore } from '@/stores/use-perfil.store';
 const perfilStore = usePerfilStore();
 const nombre = perfilStore.nombre;
 const nivel = perfilStore.nivel;
-const opciones = perfilStore.opciones;
+// const opciones = perfilStore.opciones;
 
 const router = useRouter();
 

@@ -90,7 +90,7 @@
               </div>
               <div v-if="categoria.expandido" class="ml-4 mt-2">
                 <ul>
-                  <li v-for="pregunta in categoria.preguntas" :key="pregunta" class="border-b py-2 flex justify-between items-center">
+                  <li v-for="pregunta in categoria.preguntas" :key="pregunta" class="border-b py-2 flex justify-between items-center hover:bg-gray-100">
                     {{ pregunta }}
                     <button @click="agregarPregunta(pregunta)" class="text-blue-500 hover:text-blue-700">Agregar</button>
                   </li>
@@ -225,3 +225,11 @@ const guardarPreguntaPersonalizada = () => {
   }
 };
 </script>
+
+<style scoped>
+/* Hover solo para preguntas en el modal */
+li:hover {
+  background-color: #eaebec; /* color de fondo al hacer hover */
+  cursor: pointer; /* puntero para indicar interactividad */
+}
+</style>
