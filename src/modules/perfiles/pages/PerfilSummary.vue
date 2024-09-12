@@ -128,6 +128,7 @@ import DashboardLayout from '@/modules/dashboard/layouts/DashboardLayout.vue';
 import PersonalizedInvitation from '@/modules/perfiles/components/PersonalizedInvitation.vue';
 import InvitationToCandidates from '@/modules/perfiles/components/InvitationToCandidates.vue';
 
+
 // Estado del modal para Personalizar la invitación
 const mostrarModalPersonalizada = ref(false);
 
