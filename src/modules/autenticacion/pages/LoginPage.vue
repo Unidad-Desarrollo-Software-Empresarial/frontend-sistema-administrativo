@@ -105,7 +105,7 @@ const submit = async () => {
             localStorage.setItem('usuario', usuario.usu_usuario);
             localStorage.setItem('contraseña', usuario.usu_password);
             localStorage.setItem('token', token);
-            // localStorage.setItem('rutas', rutas);
+        
 
             store.onLogginSuccess(true, usuario.usu_nombres, rol.rol_id, "Login exitoso", rutas, token);
             router.push({ name: 'dashboard', replace: true });
@@ -113,7 +113,7 @@ const submit = async () => {
             throw new Error('Datos incompletos en la respuesta');
         }
     } catch (error) {
-        store.onLogginError(`${error}`);
+        // store.onLogginError(`${error}`);
     }
 };
 
