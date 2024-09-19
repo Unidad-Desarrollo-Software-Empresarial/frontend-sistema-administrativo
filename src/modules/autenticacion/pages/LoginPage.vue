@@ -78,15 +78,19 @@ import { useAutenticacionStore } from '@/stores/use-autenticacion.store';
 import { useLogin } from '../composables/use-login';
 import { useRouter } from 'vue-router';
 import type { LoginResponseDto } from '../dto/login-response.dto';
+import { fetchRoutes } from '@/utils/route-utils';
 
-const store = useAutenticacionStore();
-const router = useRouter();
+
 const query = useLogin();
-
 const username = ref<string>('');
 const password = ref<string>('');
+const router = useRouter();
+const store = useAutenticacionStore();
+
 
 const submit = async () => {
+
+
     try {
         const { usuario, rol, rutas, token }: LoginResponseDto = await query.mutateAsync({
             username: username.value,
@@ -97,26 +101,31 @@ const submit = async () => {
             localStorage.setItem('usuarioId', usuario.usu_id.toString());
             localStorage.setItem('usuario', usuario.usu_usuario);
             localStorage.setItem('token', token);
-
-            // Guarda las rutas en localStorage como un JSON string
             localStorage.setItem('rutas', JSON.stringify(rutas));
 
             // Actualiza el store con los datos del login
             store.onLogginSuccess(true, usuario.usu_nombres, rol.rol_id, "Login exitoso", rutas, token);
 
-            // Redirige al usuario
-            router.push({ name: 'dashboard', replace: true });
+            // Configura dinámicamente las rutas
+            await fetchRoutes(router);
+
+            // Redirige al usuario a la primera ruta disponible
+            if (rutas.length > 0) {
+                const primeraRuta = rutas[0]; // Obtener la primera ruta
+                router.push({ name: primeraRuta.ruta_ruta, replace: true }); // Redirigir
+            } else {
+                // Redirige a una ruta por defecto si no hay acceso
+                router.push({ name: 'not-found', params: { catchAll: '*' }, replace: true });
+            }
         } else {
             throw new Error('Datos incompletos en la respuesta');
         }
     } catch (error) {
-        // Manejar el error usando el método del composable que ya muestra el Swal
         console.error('Error en el login:', error);
-
-        // Asegúrate de mostrar el modal del store si se produce un error
         store.onLogginError((error as Error).message || 'Ocurrió un error inesperado');
     }
 };
+
 
 const closeModal = () => {
     store.closeModal();

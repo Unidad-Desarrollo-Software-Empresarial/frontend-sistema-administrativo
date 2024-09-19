@@ -1,74 +1,33 @@
 import { type Router } from 'vue-router';
-import type { RutaInterface } from '../dto/menu-rutas-response.dto';
+import type { RutaDto } from '@/modules/autenticacion/dto/login-response.dto';
 
-// Definir rutas codificadas para pruebas
-const rutasCodificadas: RutaInterface[] = [
-  {
-    id: 1,
-    nombre: 'Home',
-    path: '/home',
-    ruta: 'home',
-    component: 'pages/HomePage.vue',
-    padre: 0,
-    indexeddb: 0,
-    privilegio: 0,
-  },
-  {
-    id: 2,
-    nombre: 'Profile',
-    path: '/profile',
-    ruta: 'profile',
-    component: 'pages/ProfilePage.vue',
-    padre: 0,
-    indexeddb: 0,
-    privilegio: 0,
-  },
-  {
-    id: 3,
-    nombre: 'Settings',
-    path: '/settings',
-    ruta: 'settings',
-    component: 'pages/SettingsPage.vue',
-    padre: 0,
-    indexeddb: 0,
-    privilegio: 0,
-  },
-  {
-    id: 4,
-    nombre: 'Account',
-    path: '/settings/account',
-    ruta: 'account',
-    component: 'pages/AccountPage.vue',
-    padre: 3,
-    indexeddb: 0,
-    privilegio: 0,
-  },
-  {
-    id: 5,
-    nombre: 'Privacy',
-    path: '/settings/privacy',
-    ruta: 'privacy',
-    component: 'pages/PrivacyPage.vue',
-    padre: 3,
-    indexeddb: 0,
-    privilegio: 0,
+// Función para obtener las rutas del localStorage
+const obtenerRutasDesdeLocalStorage = () => {
+  const rutasJSON = localStorage.getItem('rutas');
+  if (rutasJSON) {
+    return JSON.parse(rutasJSON) as RutaDto[];
   }
-];
+  return [];
+};
 
 export const parseObjectRutas = async (router: Router) => {
-  // Utilizar rutas codificadas en lugar de recuperar desde localStorage
-  const rutas: RutaInterface[] = rutasCodificadas;
+  if (!router) {
+    throw new Error('El objeto router no está definido.');
+  }
 
+  const rutas: RutaDto[] = obtenerRutasDesdeLocalStorage();
+  console.log('Rutas desde LocalStorage:', rutas); // Debugging
   // Obtener las rutas existentes en el enrutador
   const existingRoutes = router.getRoutes().map((route) => route.name);
+  console.log('Rutas existentes:', existingRoutes); // Debugging
 
   // Añadir rutas nuevas al enrutador
   rutas.forEach((ruta) => {
-    if (!existingRoutes.includes(ruta.ruta)) {
+    if (!existingRoutes.includes(ruta.ruta_ruta)) {
       router.addRoute({
-        path: ruta.path,
-        name: ruta.ruta,
-        component: () => import(/* @vite-ignore */ `../../../${ruta.component}`),
+        path: ruta.ruta_url,
+        name: ruta.ruta_ruta,
+        component: () => import(`../../../${ruta.ruta_component}`), // Importar dinámicamente el componente
         meta: {
           requiresAuth: true,
           transition: 'fade',
@@ -77,11 +36,13 @@ export const parseObjectRutas = async (router: Router) => {
     }
   });
 
+  
+
   // Procesar rutas padre e hija
-  const rutasPadre = rutas.filter((ruta) => ruta.padre === 0);
-  const rutasHijas = rutas.filter((ruta) => ruta.padre !== 0);
+  const rutasPadre = rutas.filter((ruta) => ruta.ruta_padre === 0);
+  const rutasHijas = rutas.filter((ruta) => ruta.ruta_padre !== 0);
   const rutasParseadas = rutasPadre.map((rutaPadre) => {
-    const rutasHijasParseadas = rutasHijas.filter((rutaHija) => rutaHija.padre === rutaPadre.id);
+    const rutasHijasParseadas = rutasHijas.filter((rutaHija) => rutaHija.ruta_padre === rutaPadre.ruta_id);
     return {
       ...rutaPadre,
       rutasHijas: rutasHijasParseadas,
@@ -91,7 +52,7 @@ export const parseObjectRutas = async (router: Router) => {
   return rutasParseadas;
 };
 
-// Función para eliminar rutas al cerrar sesión
+
 export const removeRoutesOnLogout = (router: Router) => {
   router.getRoutes().forEach((route) => {
     const arr = ['dashboard', 'login', 'not-found'];
@@ -102,3 +63,4 @@ export const removeRoutesOnLogout = (router: Router) => {
     }
   });
 };
+
