@@ -1,42 +1,70 @@
 import { type Router } from 'vue-router';
 import type { RutaInterface } from '../dto/menu-rutas-response.dto';
-import { addEstudiante } from '../../../indexed-db/estudiantes-db';
-import { useApi } from '@/composables/use-api';
-import {
-  personalDb,
-  type GlobalEstudianteResponse,
-  type GlobalPersonalResponse,
-  estudiantesDb,
-} from '@/indexed-db';
 
-export const parseObjectRutas = (rutas: RutaInterface[], router: Router) => {
-  rutas = [
-    {
-      id: 4,
-      nombre: 'Perfiles',
-      path: '/perfiles',
-      ruta: 'perfiles',
-      component: '/modules/perfiles/pages/PerfilesPage.vue',
-      indexeddb: 1,
-      privilegio: 0,
-      padre: 0,
-    },
-    // {
-    //   "id": 9,
-    //   "nombre": "Currículum",
-    //   "path": "/curriculum",
-    //   "ruta": "curriculum",
-    //   "component": "/modules/curriculum/pages/CurriculumPage.vue",
-    //   "indexeddb": 3,
-    //   "privilegio": 1,
-    //   "padre": 0
-    // },
-  ];
-  
-  loadIndexedData(rutas);
+// Definir rutas codificadas para pruebas
+const rutasCodificadas: RutaInterface[] = [
+  {
+    id: 1,
+    nombre: 'Home',
+    path: '/home',
+    ruta: 'home',
+    component: 'pages/HomePage.vue',
+    padre: 0,
+    indexeddb: 0,
+    privilegio: 0,
+  },
+  {
+    id: 2,
+    nombre: 'Profile',
+    path: '/profile',
+    ruta: 'profile',
+    component: 'pages/ProfilePage.vue',
+    padre: 0,
+    indexeddb: 0,
+    privilegio: 0,
+  },
+  {
+    id: 3,
+    nombre: 'Settings',
+    path: '/settings',
+    ruta: 'settings',
+    component: 'pages/SettingsPage.vue',
+    padre: 0,
+    indexeddb: 0,
+    privilegio: 0,
+  },
+  {
+    id: 4,
+    nombre: 'Account',
+    path: '/settings/account',
+    ruta: 'account',
+    component: 'pages/AccountPage.vue',
+    padre: 3,
+    indexeddb: 0,
+    privilegio: 0,
+  },
+  {
+    id: 5,
+    nombre: 'Privacy',
+    path: '/settings/privacy',
+    ruta: 'privacy',
+    component: 'pages/PrivacyPage.vue',
+    padre: 3,
+    indexeddb: 0,
+    privilegio: 0,
+  }
+];
+
+export const parseObjectRutas = async (router: Router) => {
+  // Utilizar rutas codificadas en lugar de recuperar desde localStorage
+  const rutas: RutaInterface[] = rutasCodificadas;
+
+  // Obtener las rutas existentes en el enrutador
   const existingRoutes = router.getRoutes().map((route) => route.name);
-  rutas.map((ruta) => {
-    if (!existingRoutes.includes(ruta.nombre)) {
+
+  // Añadir rutas nuevas al enrutador
+  rutas.forEach((ruta) => {
+    if (!existingRoutes.includes(ruta.ruta)) {
       router.addRoute({
         path: ruta.path,
         name: ruta.ruta,
@@ -49,6 +77,7 @@ export const parseObjectRutas = (rutas: RutaInterface[], router: Router) => {
     }
   });
 
+  // Procesar rutas padre e hija
   const rutasPadre = rutas.filter((ruta) => ruta.padre === 0);
   const rutasHijas = rutas.filter((ruta) => ruta.padre !== 0);
   const rutasParseadas = rutasPadre.map((rutaPadre) => {
@@ -58,63 +87,11 @@ export const parseObjectRutas = (rutas: RutaInterface[], router: Router) => {
       rutasHijas: rutasHijasParseadas,
     };
   });
+
   return rutasParseadas;
 };
 
-const loadIndexedData = async (rutas: RutaInterface[]) => {
-  const arrNumber = rutas.map((r) => r.indexeddb);
-
-  const dataString = JSON.stringify(rutas.map((r) => r.indexeddb));
-  const currentHash = await hashData(dataString);
-
-  // Obtener el hash almacenado
-  const storedHash = localStorage.getItem('indexedDataHash');
-
-  // Si los hashes coinciden, salir de la función
-  if (storedHash === currentHash) {
-    return;
-  }
-  localStorage.setItem('indexedDataHash', currentHash);
-
-  const setIndexed = new Set(arrNumber);
-  const arrIndexed = [...setIndexed];
-
-  if (arrIndexed.includes(3)) {
-    // const responseEstudiante = await useApi.get<GlobalEstudianteResponse[]>('global_estudiantes')
-    // responseEstudiante.data.map((estudiante) => {
-    //     estudiantesDb.addEstudiante(estudiante)
-    // })
-
-    useApi
-      .get<GlobalEstudianteResponse[]>('global_estudiantes')
-      .then((estudiantes) => estudiantesDb.addAllEstudiantes(estudiantes.data));
-
-    // const responsePersonal = await useApi.get<GlobalPersonalResponse[]>('global_personal')
-    // responsePersonal.data.map((personal) => {
-    //     personalDb.addPersonal(personal)
-    // })
-    useApi
-      .get<GlobalPersonalResponse[]>('global_personal')
-      .then((personals) => personalDb.addAllPersonal(personals.data));
-
-    return;
-  }
-
-  if (arrIndexed.includes(2)) {
-    const response = await useApi.get<GlobalPersonalResponse[]>('global_personal');
-    response.data.map((personal) => {
-      personalDb.addPersonal(personal);
-    });
-  }
-
-  if (arrIndexed.includes(1)) {
-    const response = await useApi.get<GlobalEstudianteResponse[]>('global_estudiantes');
-    response.data.map((estudiante) => {
-      addEstudiante(estudiante);
-    });
-  }
-};
-
+// Función para eliminar rutas al cerrar sesión
 export const removeRoutesOnLogout = (router: Router) => {
   router.getRoutes().forEach((route) => {
     const arr = ['dashboard', 'login', 'not-found'];
@@ -124,13 +101,4 @@ export const removeRoutesOnLogout = (router: Router) => {
       router.removeRoute(route.name as string);
     }
   });
-};
-
-const hashData = async (data: string): Promise<string> => {
-  const encoder = new TextEncoder();
-  const dataBuffer = encoder.encode(data);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', dataBuffer);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
-  return hashHex;
 };

@@ -79,48 +79,49 @@ import { useLogin } from '../composables/use-login';
 import { useRouter } from 'vue-router';
 import type { LoginResponseDto } from '../dto/login-response.dto';
 
-const store = useAutenticacionStore()
-const router = useRouter()
-const query = useLogin()
+const store = useAutenticacionStore();
+const router = useRouter();
+const query = useLogin();
 
-const username = ref<string>();
-const password = ref<string>();
+const username = ref<string>('');
+const password = ref<string>('');
 
 const submit = async () => {
-    console.log(username.value);
-    console.log(password.value);
     try {
-        const { usuario, rol, rutas, token }: LoginResponseDto = await query.mutateAsync(
-            {
-                username: username.value,
-                password: password.value
-            }
-        );
+        const { usuario, rol, rutas, token }: LoginResponseDto = await query.mutateAsync({
+            username: username.value,
+            password: password.value,
+        });
 
-        console.log(rutas);
-        
         if (usuario && rol && rutas && token) {
-
             localStorage.setItem('usuarioId', usuario.usu_id.toString());
             localStorage.setItem('usuario', usuario.usu_usuario);
-            localStorage.setItem('contraseña', usuario.usu_password);
             localStorage.setItem('token', token);
-        
 
+            // Guarda las rutas en localStorage como un JSON string
+            localStorage.setItem('rutas', JSON.stringify(rutas));
+
+            // Actualiza el store con los datos del login
             store.onLogginSuccess(true, usuario.usu_nombres, rol.rol_id, "Login exitoso", rutas, token);
+
+            // Redirige al usuario
             router.push({ name: 'dashboard', replace: true });
         } else {
             throw new Error('Datos incompletos en la respuesta');
         }
     } catch (error) {
-        // store.onLogginError(`${error}`);
+        // Manejar el error usando el método del composable que ya muestra el Swal
+        console.error('Error en el login:', error);
+
+        // Asegúrate de mostrar el modal del store si se produce un error
+        store.onLogginError((error as Error).message || 'Ocurrió un error inesperado');
     }
 };
 
-
 const closeModal = () => {
-    store.closeModal()
-}
+    store.closeModal();
+};
+
 </script>
 
 <style scoped></style>

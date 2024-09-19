@@ -14,7 +14,7 @@
               class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 hover:cursor-pointer dark:hover:bg-gray-700 group">
               <span class="ms-1">{{ item.nombre }}</span>
             </a>
-            <div v-if="item.rutasHijas?.length && item.rutasHijas?.length > 0">
+            <div v-if="item.rutasHijas?.length">
               <ul>
                 <li v-for="(subItem, subIndex) in item.rutasHijas" :key="subIndex">
                   <a @click="navigation(subItem.ruta)"
@@ -104,7 +104,6 @@
 import { ref, onMounted, watchEffect } from 'vue';
 import { useAutenticacionStore } from '@/stores/use-autenticacion.store';
 import { useRouter } from 'vue-router';
-import { useMenuRutas } from '../composable/use-menu-rutas';
 import { parseObjectRutas, removeRoutesOnLogout } from '../helpers/parse-object-rutas';
 import type { RutaInterface } from '../dto/menu-rutas-response.dto';
 import { personalDb, estudiantesDb } from '@/indexed-db';
@@ -126,21 +125,24 @@ const logout = () => {
   router.push({ name: 'login', replace: true });
 };
 
-const autenticacionStorage = JSON.parse(localStorage.getItem('autenticacion') || '{}');
-const query = useMenuRutas(autenticacionStorage.rolId);
+// const autenticacionStorage = JSON.parse(localStorage.getItem('autenticacion') || '{}');
 const rutas = ref<RutaInterface[]>([]);
+
+const fetchRoutes = async () => {
+  const rutasParseadas = await parseObjectRutas(router);
+  rutas.value = rutasParseadas;
+  store.updateRutas(rutas.value);
+};
 
 onMounted(() => {
   initFlowbite();
-  rutas.value = parseObjectRutas(query?.data.value?.rutas ?? [], router);
+  fetchRoutes();
   personalDb.openDbPersonal();
   estudiantesDb.openDbEstudiantes();
-  store.updateRutas(rutas.value);
 });
 
 watchEffect(() => {
-  rutas.value = parseObjectRutas(query?.data.value?.rutas ?? [], router);
-  store.updateRutas(rutas.value);
+  fetchRoutes();
 });
 
 const navigation = (routeName?: string) => {
@@ -148,3 +150,5 @@ const navigation = (routeName?: string) => {
   router.push({ name: routeName });
 };
 </script>
+
+

@@ -36,4 +36,8 @@ export interface LoginResponseDto {
     rol: RolDto;
     rutas: RutaDto[];
     token: string;
+    message?: string;  
+    error?: string;    
+    statusCode?: number;  
+
 }
