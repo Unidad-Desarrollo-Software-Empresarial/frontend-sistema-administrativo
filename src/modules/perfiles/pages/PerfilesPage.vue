@@ -117,82 +117,108 @@
                     <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full md:max-w-2xl lg:max-w-3xl"
                         @click.stop>
                         <form @submit.prevent="guardar">
-                            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                            <div class="bg-white p-6 rounded-lg shadow-xl max-w-3xl mx-auto">
                                 <div class="sm:flex sm:items-start">
-                                    <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
-                                        <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">Crear
-                                            Perfil
+                                    <div class="w-full text-center sm:text-left">
+                                        <!-- Título del modal -->
+                                        <h3 class="text-2xl font-semibold text-gray-900 leading-tight mb-4">Crear Perfil
                                         </h3>
-                                        <div class="mt-2">
+
+                                        <!-- Contenido desplazable -->
+                                        <div class="overflow-y-auto" style="max-height: 400px;">
+
                                             <!-- Formulario dentro del modal -->
-                                            <div class="mb-4">
+                                            <div class="mb-6">
                                                 <label for="nombre"
-                                                    class="block text-gray-700 text-sm font-bold mb-2">Nombre</label>
+                                                    class="block text-gray-700 text-sm font-bold mb-2">Nombre del
+                                                    Perfil</label>
                                                 <input v-model="nombre" type="text" id="nombre" @input="limitarLetras"
-                                                    class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                    class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                                     placeholder="Ej. Analista de Talento Humano" />
                                                 <div class="text-right text-sm text-gray-500 mt-1">{{ contarCaracteres
-                                                    }} /
-                                                    150</div>
+                                                    }} / 150</div>
                                                 <p v-if="mensajeError" class="text-red-500 text-sm mt-1">{{ mensajeError
-                                                    }}
-                                                </p>
+                                                    }}</p>
                                             </div>
 
                                             <!-- Opciones de nivel -->
-                                            <div class="mb-4">
-                                                <label class="block text-gray-700 text-sm font-bold mb-2">Nivel</label>
-                                                <div class="flex justify-around">
-                                                    <label class="inline-flex items-center">
+                                            <div class="mb-8">
+                                                <h4 class="text-lg font-semibold text-gray-800 mb-4">Nivel</h4>
+                                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                                    <div
+                                                        class="flex items-start p-4 border border-gray-200 rounded-lg hover:shadow-lg transition-shadow duration-200 ease-in-out">
                                                         <input type="radio" v-model="nivel" value="Alto"
-                                                            class="form-radio text-blue-500">
-                                                        <span class="ml-2">Alto</span>
-                                                    </label>
-                                                    <label class="inline-flex items-center">
+                                                            class="form-radio text-blue-500 mr-4 mt-1">
+                                                        <div class="flex-grow">
+                                                            <span class="block font-medium text-gray-800">Alto</span>
+                                                            <p class="text-sm text-gray-600 mt-1">Jefes, Presidentes,
+                                                                Directores. Nivel de mayor autoridad.</p>
+                                                        </div>
+                                                    </div>
+                                                    <div
+                                                        class="flex items-start p-4 border border-gray-200 rounded-lg hover:shadow-lg transition-shadow duration-200 ease-in-out">
                                                         <input type="radio" v-model="nivel" value="Medio"
-                                                            class="form-radio text-blue-500">
-                                                        <span class="ml-2">Medio</span>
-                                                    </label>
-                                                    <label class="inline-flex items-center">
+                                                            class="form-radio text-blue-500 mr-4 mt-1">
+                                                        <div class="flex-grow">
+                                                            <span class="block font-medium text-gray-800">Medio</span>
+                                                            <p class="text-sm text-gray-600 mt-1">Supervisores,
+                                                                Coordinadores. Gestión intermedia.</p>
+                                                        </div>
+                                                    </div>
+                                                    <div
+                                                        class="flex items-start p-4 border border-gray-200 rounded-lg hover:shadow-lg transition-shadow duration-200 ease-in-out">
                                                         <input type="radio" v-model="nivel" value="Bajo"
-                                                            class="form-radio text-blue-500">
-                                                        <span class="ml-2">Bajo</span>
-                                                    </label>
+                                                            class="form-radio text-blue-500 mr-4 mt-1">
+                                                        <div class="flex-grow">
+                                                            <span class="block font-medium text-gray-800">Bajo</span>
+                                                            <p class="text-sm text-gray-600 mt-1">Operativos, Técnicos.
+                                                                Nivel de trabajo práctico y especializado.</p>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
 
-                                            <!-- Checkboxes -->
-                                            <div class="mb-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                                <label class="inline-flex items-center">
-                                                    <input type="checkbox" v-model="opciones" value="disc"
-                                                        class="form-checkbox text-orange-500">
-                                                    <span class="ml-2">DISC</span>
-                                                </label>
-                                                <label class="inline-flex items-center">
-                                                    <input type="checkbox" v-model="opciones" value="curriculum"
-                                                        class="form-checkbox text-orange-500">
-                                                    <span class="ml-2">CURRICULUM</span>
-                                                </label>
-                                                <label class="inline-flex items-center">
-                                                    <input type="checkbox" v-model="opciones" value="conocimiento"
-                                                        class="form-checkbox text-orange-500">
-                                                    <span class="ml-2">CONOCIMIENTO</span>
-                                                </label>
-                                                <label class="inline-flex items-center">
-                                                    <input type="checkbox" v-model="opciones" value="competencias"
-                                                        class="form-checkbox text-orange-500">
-                                                    <span class="ml-2">COMPETENCIAS</span>
-                                                </label>
-                                                <label class="inline-flex items-center">
-                                                    <input type="checkbox" v-model="opciones" value="video"
-                                                        class="form-checkbox text-orange-500">
-                                                    <span class="ml-2">VIDEO ENTREVISTA</span>
-                                                </label>
+                                            <!-- Componentes del perfil -->
+                                            <div>
+                                                <h4 class="text-lg font-semibold text-gray-800 mb-4">Componentes</h4>
+                                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                                    <label
+                                                        class="flex items-center p-3 border border-gray-200 rounded-lg hover:shadow-md transition-shadow duration-200 ease-in-out">
+                                                        <input type="checkbox" v-model="opciones" value="disc"
+                                                            class="form-checkbox text-orange-500 mr-3">
+                                                        <span class="text-gray-800">DISC</span>
+                                                    </label>
+                                                    <label
+                                                        class="flex items-center p-3 border border-gray-200 rounded-lg hover:shadow-md transition-shadow duration-200 ease-in-out">
+                                                        <input type="checkbox" v-model="opciones" value="curriculum"
+                                                            class="form-checkbox text-orange-500 mr-3">
+                                                        <span class="text-gray-800">CURRICULUM</span>
+                                                    </label>
+                                                    <label
+                                                        class="flex items-center p-3 border border-gray-200 rounded-lg hover:shadow-md transition-shadow duration-200 ease-in-out">
+                                                        <input type="checkbox" v-model="opciones" value="conocimiento"
+                                                            class="form-checkbox text-orange-500 mr-3">
+                                                        <span class="text-gray-800">CONOCIMIENTO</span>
+                                                    </label>
+                                                    <label
+                                                        class="flex items-center p-3 border border-gray-200 rounded-lg hover:shadow-md transition-shadow duration-200 ease-in-out">
+                                                        <input type="checkbox" v-model="opciones" value="competencias"
+                                                            class="form-checkbox text-orange-500 mr-3">
+                                                        <span class="text-gray-800">COMPETENCIAS</span>
+                                                    </label>
+                                                    <label
+                                                        class="flex items-center p-3 border border-gray-200 rounded-lg hover:shadow-md transition-shadow duration-200 ease-in-out">
+                                                        <input type="checkbox" v-model="opciones" value="video"
+                                                            class="form-checkbox text-orange-500 mr-3">
+                                                        <span class="text-gray-800">VIDEO ENTREVISTA</span>
+                                                    </label>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
                             <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                                 <button type="submit" @click="guardar"
                                     class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-500 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
@@ -216,6 +242,7 @@ import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import DashboardLayout from '@/modules/dashboard/layouts/DashboardLayout.vue';
 import { usePerfilStore } from '@/stores/use-perfil.store';
+import Swal from 'sweetalert2';
 
 const router = useRouter();
 const mostrarModal = ref(false);
@@ -242,9 +269,46 @@ const cerrarModal = () => {
     mostrarModal.value = false;
 };
 
+//Guardar datos del perfil creado
+
+
 
 const guardar = () => {
+    // Reiniciar mensaje de error
+    mensajeError.value = '';
 
+    // Validar nombre
+    if (!nombre.value) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'El nombre del perfil es obligatorio.',
+        });
+        return; // Detener el guardado si hay errores
+    }
+
+    // Validar nivel
+    if (!nivel.value) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Debes seleccionar un nivel.',
+        });
+        return; // Detener el guardado si hay errores
+    }
+
+    // Validar al menos una opción seleccionada
+    if (opciones.value.length === 0) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Debes seleccionar al menos una opción.',
+        });
+        return; // Detener el guardado si hay errores
+    }
+
+    // Guardar los datos si la validación es exitosa
+    const perfilStore = usePerfilStore();
     perfilStore.setPerfil(nombre.value, nivel.value, opciones.value);
 
     console.log('Guardado', {
@@ -252,8 +316,8 @@ const guardar = () => {
         nivel: nivel.value,
         opciones: opciones.value,
     });
-    cerrarModal();
 
+    cerrarModal();
 
     setTimeout(() => {
         router.replace('/perfil-settings');
@@ -261,10 +325,7 @@ const guardar = () => {
 };
 
 
-//Guardar datos del perfil creado
 
-
-const perfilStore = usePerfilStore();
 
 
 </script>
