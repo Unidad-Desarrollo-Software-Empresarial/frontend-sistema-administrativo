@@ -337,7 +337,8 @@ const guardar = async () => {
     }
 };
 
-const perfiles = ref([]); // Aquí se almacenarán los perfiles
+const perfiles = ref<Perfil[]>([]); // Ahora perfiles es un array de Perfil
+ // Aquí se almacenarán los perfiles
 
 onMounted(async () => {
     try {
