@@ -121,8 +121,8 @@ const submit = async () => {
             throw new Error('Datos incompletos en la respuesta');
         }
     } catch (error) {
-        console.error('Error en el login:', error);
-        store.onLogginError((error as Error).message || 'Ocurrió un error inesperado');
+        // console.error('Error en el login:', error);
+        // store.onLogginError((error as Error).message || 'Ocurrió un error inesperado');
     }
 };
 

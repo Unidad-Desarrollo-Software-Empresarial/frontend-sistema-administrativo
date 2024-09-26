@@ -16,10 +16,10 @@ export const parseObjectRutas = async (router: Router) => {
   }
 
   const rutas: RutaDto[] = obtenerRutasDesdeLocalStorage();
-  console.log('Rutas desde LocalStorage:', rutas); // Debugging
+  // console.log('Rutas desde LocalStorage:', rutas); // Debugging
   // Obtener las rutas existentes en el enrutador
   const existingRoutes = router.getRoutes().map((route) => route.name);
-  console.log('Rutas existentes:', existingRoutes); // Debugging
+  // console.log('Rutas existentes:', existingRoutes); // Debugging
 
   // Añadir rutas nuevas al enrutador
   rutas.forEach((ruta) => {

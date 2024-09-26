@@ -148,7 +148,7 @@ onMounted(() => {
 
 const navigation = (routeName?: string) => {
   if (!routeName || routeName === '') return;
-  console.log("route name",routeName)
+  // console.log("route name",routeName)
   router.push({ name: routeName });
 };
 </script>

@@ -1,6 +1,6 @@
 <template>
     <DashboardLayout>
-        <div class="w-full h-full bg-white shadow-lg rounded-lg p-6">
+        <div class="w-full h-full bg-white  rounded-lg p-6">
             <!-- Título y subtítulo -->
             <div class="mb-4">
                 <h2 class="text-2xl font-bold text-gray-800">Listado de perfiles</h2>
@@ -57,41 +57,38 @@
                         Competencias</p>
                 </div>
 
-                <div class="border border-gray-200 p-4 rounded-lg shadow">
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <span class="text-xs text-red-500">Pendiente</span>
-                            <p class="font-semibold text-gray-800">PRUEBA JULIO 11</p>
+                <div class="space-y-4">
+                    <!-- Listado de perfiles dinámico -->
+                    <div v-for="perfil in perfiles" :key="perfil.perf_id"
+                        class="border border-gray-200 p-4 rounded-lg shadow">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <!-- Estado del perfil -->
+                                <span class="text-xs"
+                                    :class="{ 'text-green-500': perfil.perf_estado === 1, 'text-red-500': perfil.perf_estado === 0 }">
+                                    {{ perfil.perf_estado === 1 ? 'Activo' : 'Inactivo' }}
+                                </span>
+                                <!-- Nombre del perfil -->
+                                <p class="font-semibold text-gray-800">{{ perfil.perf_nombre }}</p>
+                            </div>
+                            <button class="text-gray-600 hover:text-gray-900">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 12h12m-6-6v12" />
+                                </svg>
+                            </button>
                         </div>
-                        <button class="text-gray-600 hover:text-gray-900">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M6 12h12m-6-6v12" />
-                            </svg>
-                        </button>
+                        <p class="text-sm text-gray-600">
+                            Estado: {{ perfil.perf_estado === 1 ? 'Activo' : 'Inactivo' }} | Nivel: {{
+                                perfil.perf_nivel_contribucion }}
+                        </p>
                     </div>
-                    <p class="text-sm text-gray-600">Estado: Activo | Dificultad: Bajo | Componente: DISC,
-                        Competencias</p>
                 </div>
 
-                <div class="border border-gray-200 p-4 rounded-lg shadow">
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <span class="text-xs text-red-500">Pendiente</span>
-                            <p class="font-semibold text-gray-800">REPRESENTANTE COMERCIAL</p>
-                        </div>
-                        <button class="text-gray-600 hover:text-gray-900">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M6 12h12m-6-6v12" />
-                            </svg>
-                        </button>
-                    </div>
-                    <p class="text-sm text-gray-600">Estado: Activo | Dificultad: Medio | Componente: DISC,
-                        Competencias, Conocimiento, Currículum</p>
-                </div>
+
+
+
             </div>
 
             <!-- Botón verde de añadir perfil -->
@@ -220,7 +217,7 @@
                             </div>
 
                             <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                                <button type="submit" @click="guardar"
+                                <button type="submit"
                                     class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-500 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
                                     Guardar Perfil
                                 </button>
@@ -238,18 +235,25 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import DashboardLayout from '@/modules/dashboard/layouts/DashboardLayout.vue';
 import { usePerfilStore } from '@/stores/use-perfil.store';
 import Swal from 'sweetalert2';
+import { useGuardarPerfil } from '@/modules/perfiles/composables/customDataTableAgregarPerfilesModal';
+import { useApi } from '@/composables/use-api';
 
 const router = useRouter();
+const guardarPerfil = useGuardarPerfil(); // Mutación
 const mostrarModal = ref(false);
 const nombre = ref('');
 const nivel = ref('');
 const opciones = ref<string[]>([]);
 const mensajeError = ref('');
+
+const perfilStore = usePerfilStore();
+perfilStore.setPerfil(nombre.value, nivel.value, opciones.value);
+console.log(opciones.value)
 
 const contarCaracteres = computed(() => {
     return nombre.value.length;
@@ -273,58 +277,76 @@ const cerrarModal = () => {
 
 
 
-const guardar = () => {
-    // Reiniciar mensaje de error
-    mensajeError.value = '';
+const guardar = async () => {
 
-    // Validar nombre
+    const usuarioId = localStorage.getItem('usuarioId');
+
+
+    // Validaciones
     if (!nombre.value) {
         Swal.fire({
             icon: 'error',
             title: 'Error',
             text: 'El nombre del perfil es obligatorio.',
         });
-        return; // Detener el guardado si hay errores
+        return;
     }
 
-    // Validar nivel
     if (!nivel.value) {
         Swal.fire({
             icon: 'error',
             title: 'Error',
             text: 'Debes seleccionar un nivel.',
         });
-        return; // Detener el guardado si hay errores
+        return;
     }
 
-    // Validar al menos una opción seleccionada
     if (opciones.value.length === 0) {
         Swal.fire({
             icon: 'error',
             title: 'Error',
             text: 'Debes seleccionar al menos una opción.',
         });
-        return; // Detener el guardado si hay errores
+        return;
     }
 
-    // Guardar los datos si la validación es exitosa
-    const perfilStore = usePerfilStore();
-    perfilStore.setPerfil(nombre.value, nivel.value, opciones.value);
+    // Preparar datos
+    const perfilDto = {
+        perf_nombre: nombre.value,
+        perf_nivel_contribucion: nivel.value,
+        usu_id: Number(usuarioId), // Cambia este valor con el ID del usuario real
+    };
 
-    console.log('Guardado', {
-        nombre: nombre.value,
-        nivel: nivel.value,
-        opciones: opciones.value,
-    });
+    try {
+        // Llamar la mutación para guardar el perfil
+        await guardarPerfil.mutateAsync(perfilDto);
 
-    cerrarModal();
+        Swal.fire({
+            icon: 'success',
+            title: 'Perfil Guardado',
+            text: 'El perfil se ha guardado correctamente.',
+        });
 
-    setTimeout(() => {
-        router.replace('/perfil-settings');
-    }, 100);
+        cerrarModal();
+
+        setTimeout(() => {
+            router.replace('/perfil-settings');
+        }, 100);
+    } catch (error) {
+        console.error('Error guardando el perfil:', error);
+    }
 };
 
+const perfiles = ref([]); // Aquí se almacenarán los perfiles
 
+onMounted(async () => {
+    try {
+        const response = await useApi.get('/api/v1/perfiles'); // Cambia la URL por la correcta si es necesario
+        perfiles.value = response.data;
+    } catch (error) {
+        console.error('Error al obtener los perfiles:', error);
+    }
+});
 
 
 
