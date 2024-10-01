@@ -1,4 +1,4 @@
-interface Perfil {
+export interface PerfilResponse {
     perf_id: number;
     perf_nombre: string;
     perf_nivel_contribucion: string;

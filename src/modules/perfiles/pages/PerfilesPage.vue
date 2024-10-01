@@ -35,61 +35,43 @@
                 </div>
             </div>
 
-            <!-- Listado de perfiles -->
-            <div class="space-y-4">
-                <!-- Tarjeta de perfil -->
-                <div class="border border-gray-200 p-4 rounded-lg shadow">
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <span class="text-xs text-green-500">Activo</span>
-                            <p class="font-semibold text-gray-800">PRACTICANTE PRE PROFESIONAL DE BUSINESS
-                                EXCELLENCE PRUEBA</p>
-                        </div>
-                        <button class="text-gray-600 hover:text-gray-900">
+            <!-- Listado de perfiles dinámico -->
+            <div v-for="perfil in perfiles" :key="perfil.perf_id" class="border border-gray-200 p-4 rounded-lg shadow">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <!-- Estado del perfil -->
+                        <span class="text-xs"
+                            :class="{ 'text-green-500': perfil.perf_estado === 1, 'text-red-500': perfil.perf_estado === 0 }">
+                            {{ perfil.perf_estado === 1 ? 'Activo' : 'Inactivo' }}
+                        </span>
+                        <!-- Nombre del perfil -->
+                        <p class="font-semibold text-gray-800">{{ perfil.perf_nombre }}</p>
+                    </div>
+
+                    <!-- Botones de Editar y Borrar -->
+                    <div class="flex">
+                        <button @click="abrirModalEditar(perfil)" class="text-gray-600 hover:text-gray-900">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M6 12h12m-6-6v12" />
                             </svg>
                         </button>
-                    </div>
-                    <p class="text-sm text-gray-600">Estado: Activo | Dificultad: Bajo | Componente: DISC,
-                        Competencias</p>
-                </div>
-
-                <div class="space-y-4">
-                    <!-- Listado de perfiles dinámico -->
-                    <div v-for="perfil in perfiles" :key="perfil.perf_id"
-                        class="border border-gray-200 p-4 rounded-lg shadow">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <!-- Estado del perfil -->
-                                <span class="text-xs"
-                                    :class="{ 'text-green-500': perfil.perf_estado === 1, 'text-red-500': perfil.perf_estado === 0 }">
-                                    {{ perfil.perf_estado === 1 ? 'Activo' : 'Inactivo' }}
-                                </span>
-                                <!-- Nombre del perfil -->
-                                <p class="font-semibold text-gray-800">{{ perfil.perf_nombre }}</p>
-                            </div>
-                            <button class="text-gray-600 hover:text-gray-900">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M6 12h12m-6-6v12" />
-                                </svg>
-                            </button>
-                        </div>
-                        <p class="text-sm text-gray-600">
-                            Estado: {{ perfil.perf_estado === 1 ? 'Activo' : 'Inactivo' }} | Nivel: {{
-                                perfil.perf_nivel_contribucion }}
-                        </p>
+                        <button @click="borrarPerfil(perfil.perf_id)" class="text-gray-600 hover:text-gray-900 ml-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
                     </div>
                 </div>
-
-
-
-
+                <p class="text-sm text-gray-600">
+                    Estado: {{ perfil.perf_estado === 1 ? 'Activo' : 'Inactivo' }} | Nivel: {{
+                        perfil.perf_nivel_contribucion }}
+                </p>
             </div>
+
 
             <!-- Botón verde de añadir perfil -->
             <button @click="abrirModal"
@@ -231,6 +213,125 @@
                 </div>
             </div>
         </div>
+        <!-- Modal de Edición de Perfil -->
+        <div v-if="mostrarModalEditar" class="fixed inset-0 z-50 overflow-y-auto" @click="cerrarModalEditar">
+            <div class="flex items-center justify-center min-h-screen px-4 text-center sm:block sm:p-0">
+                <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+                    <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+                </div>
+
+                <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+                <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full md:max-w-2xl lg:max-w-3xl"
+                    @click.stop>
+                    <form @submit.prevent="guardarEdicion">
+                        <div class="bg-white p-6 rounded-lg shadow-xl max-w-3xl mx-auto max-h-[80vh] overflow-y-auto">
+                            <div class="sm:flex sm:items-start">
+                                <div class="w-full text-center sm:text-left">
+                                    <h3 class="text-2xl font-semibold text-gray-900 leading-tight mb-4">Editar Perfil
+                                    </h3>
+
+                                    <!-- Formulario dentro del modal -->
+                                    <div class="mb-6">
+                                        <label for="nombre-editar"
+                                            class="block text-gray-700 text-sm font-bold mb-2">Nombre del Perfil</label>
+                                        <input v-model="nombreEditar" type="text" id="nombre-editar"
+                                            class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            placeholder="Ej. Analista de Talento Humano" />
+                                    </div>
+
+                                    <!-- Opciones de nivel -->
+                                    <div class="mb-8">
+                                        <h4 class="text-lg font-semibold text-gray-800 mb-4">Nivel</h4>
+                                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                            <div
+                                                class="flex items-start p-4 border border-gray-200 rounded-lg hover:shadow-lg transition-shadow duration-200 ease-in-out">
+                                                <input type="radio" v-model="nivelEditar" value="Alto"
+                                                    class="form-radio text-blue-500 mr-4 mt-1">
+                                                <div class="flex-grow">
+                                                    <span class="block font-medium text-gray-800">Alto</span>
+                                                    <p class="text-sm text-gray-600 mt-1">Jefes, Presidentes,
+                                                        Directores. Nivel de mayor autoridad.</p>
+                                                </div>
+                                            </div>
+                                            <div
+                                                class="flex items-start p-4 border border-gray-200 rounded-lg hover:shadow-lg transition-shadow duration-200 ease-in-out">
+                                                <input type="radio" v-model="nivelEditar" value="Medio"
+                                                    class="form-radio text-blue-500 mr-4 mt-1">
+                                                <div class="flex-grow">
+                                                    <span class="block font-medium text-gray-800">Medio</span>
+                                                    <p class="text-sm text-gray-600 mt-1">Supervisores, Coordinadores.
+                                                        Gestión intermedia.</p>
+                                                </div>
+                                            </div>
+                                            <div
+                                                class="flex items-start p-4 border border-gray-200 rounded-lg hover:shadow-lg transition-shadow duration-200 ease-in-out">
+                                                <input type="radio" v-model="nivelEditar" value="Bajo"
+                                                    class="form-radio text-blue-500 mr-4 mt-1">
+                                                <div class="flex-grow">
+                                                    <span class="block font-medium text-gray-800">Bajo</span>
+                                                    <p class="text-sm text-gray-600 mt-1">Operativos, Técnicos. Nivel de
+                                                        trabajo práctico y especializado.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Componentes del perfil -->
+                                    <div>
+                                        <h4 class="text-lg font-semibold text-gray-800 mb-4">Componentes</h4>
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                            <label
+                                                class="flex items-center p-3 border border-gray-200 rounded-lg hover:shadow-md transition-shadow duration-200 ease-in-out">
+                                                <input type="checkbox" v-model="opcionesEditar" value="disc"
+                                                    class="form-checkbox text-orange-500 mr-3">
+                                                <span class="text-gray-800">DISC</span>
+                                            </label>
+                                            <label
+                                                class="flex items-center p-3 border border-gray-200 rounded-lg hover:shadow-md transition-shadow duration-200 ease-in-out">
+                                                <input type="checkbox" v-model="opcionesEditar" value="curriculum"
+                                                    class="form-checkbox text-orange-500 mr-3">
+                                                <span class="text-gray-800">CURRICULUM</span>
+                                            </label>
+                                            <label
+                                                class="flex items-center p-3 border border-gray-200 rounded-lg hover:shadow-md transition-shadow duration-200 ease-in-out">
+                                                <input type="checkbox" v-model="opcionesEditar" value="conocimiento"
+                                                    class="form-checkbox text-orange-500 mr-3">
+                                                <span class="text-gray-800">CONOCIMIENTO</span>
+                                            </label>
+                                            <label
+                                                class="flex items-center p-3 border border-gray-200 rounded-lg hover:shadow-md transition-shadow duration-200 ease-in-out">
+                                                <input type="checkbox" v-model="opcionesEditar" value="competencias"
+                                                    class="form-checkbox text-orange-500 mr-3">
+                                                <span class="text-gray-800">COMPETENCIAS</span>
+                                            </label>
+                                            <label
+                                                class="flex items-center p-3 border border-gray-200 rounded-lg hover:shadow-md transition-shadow duration-200 ease-in-out">
+                                                <input type="checkbox" v-model="opcionesEditar" value="video"
+                                                    class="form-checkbox text-orange-500 mr-3">
+                                                <span class="text-gray-800">VIDEO ENTREVISTA</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                            <button type="submit"
+                                class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-500 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
+                                Actualizar Perfil
+                            </button>
+                            <button @click="cerrarModalEditar" type="button"
+                                class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                                Cancelar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
     </DashboardLayout>
 </template>
 
@@ -242,18 +343,30 @@ import { usePerfilStore } from '@/stores/use-perfil.store';
 import Swal from 'sweetalert2';
 import { useGuardarPerfil } from '@/modules/perfiles/composables/customDataTableAgregarPerfilesModal';
 import { useApi } from '@/composables/use-api';
+import type { PerfilResponse } from '@/modules/perfiles/dto/PerfilResponseGet';
+
 
 const router = useRouter();
-const guardarPerfil = useGuardarPerfil(); // Mutación
+const guardarPerfil = useGuardarPerfil();
 const mostrarModal = ref(false);
 const nombre = ref('');
 const nivel = ref('');
+const perfilActual = ref<PerfilResponse | null>(null);
 const opciones = ref<string[]>([]);
 const mensajeError = ref('');
 
 const perfilStore = usePerfilStore();
 perfilStore.setPerfil(nombre.value, nivel.value, opciones.value);
 console.log(opciones.value)
+
+const obtenerPerfiles = async () => {
+    try {
+        const response = await useApi.get('/api/v1/perfiles');
+        perfiles.value = response.data; // Actualiza la lista de perfiles
+    } catch (error) {
+        console.error('Error al obtener los perfiles:', error);
+    }
+};
 
 const contarCaracteres = computed(() => {
     return nombre.value.length;
@@ -337,17 +450,117 @@ const guardar = async () => {
     }
 };
 
-const perfiles = ref<Perfil[]>([]); // Ahora perfiles es un array de Perfil
- // Aquí se almacenarán los perfiles
+
+const perfiles = ref<PerfilResponse[]>([]);
+
 
 onMounted(async () => {
-    try {
-        const response = await useApi.get('/api/v1/perfiles'); // Cambia la URL por la correcta si es necesario
-        perfiles.value = response.data;
-    } catch (error) {
-        console.error('Error al obtener los perfiles:', error);
-    }
+    await obtenerPerfiles(); // Llama a la función al montar el componente
 });
+
+const idPerfil = ref<number>(0); // Asegúrate de inicializar con un valor por defecto
+const mostrarModalEditar = ref(false);
+const nombreEditar = ref('');
+const nivelEditar = ref('');
+const opcionesEditar = ref<string[]>([]);
+
+// Función para abrir el modal de edición
+const abrirModalEditar = (perfil: PerfilResponse) => {
+    idPerfil.value = perfil.perf_id; // Asigna el ID del perfil aquí
+    mostrarModalEditar.value = true;
+    nombreEditar.value = perfil.perf_nombre;
+    nivelEditar.value = perfil.perf_nivel_contribucion;
+    // opcionesEditar.value = perfil.opciones || []; // Asigna las opciones del perfil
+};
+
+// Función para cerrar el modal de edición
+const cerrarModalEditar = () => {
+    mostrarModalEditar.value = false;
+};
+
+
+
+const guardarEdicion = async () => {
+    const usuarioId = localStorage.getItem('usuarioId');
+
+    console.log('Guardando edición...'); // Para verificar que la función se está llamando
+    console.log('ID de Perfil:', idPerfil.value); // Verifica que el ID esté definido
+    console.log('Nombre Editar:', nombreEditar.value);
+    console.log('Nivel Editar:', nivelEditar.value);
+    console.log('Opciones Editar:', opcionesEditar.value);
+    console.log('Id usuario:', usuarioId);
+
+    // Validaciones similares a las de guardar
+    if (!nombreEditar.value) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'El nombre del perfil es obligatorio.',
+        });
+        return;
+    }
+
+    if (!nivelEditar.value) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Debes seleccionar un nivel.',
+        });
+        return;
+    }
+
+    if (opcionesEditar.value.length === 0) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Debes seleccionar al menos una opción.',
+        });
+        return;
+    }
+
+    // Cuerpo de la solicitud, enviando solo los campos que deseas actualizar
+    const perfilDto = {
+        perf_nombre: nombreEditar.value,
+        perf_nivel_contribucion: nivelEditar.value,
+        usu_id: Number(usuarioId),
+        // Agrega otros campos si es necesario
+    };
+
+    try {
+        // Cambiar aquí a PATCH
+        await useApi.patch(`/api/v1/perfiles/${idPerfil.value}`, perfilDto); // Llama a la API para actualizar el perfil
+
+        Swal.fire({
+            icon: 'success',
+            title: 'Perfil Actualizado',
+            text: 'El perfil se actualizó correctamente.',
+        });
+    } catch (error) {
+        console.error('Error al actualizar el perfil:', error); // Para ver más detalles del error
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No se pudo actualizar el perfil. Intenta nuevamente.',
+        });
+    } finally {
+        cerrarModalEditar(); // Cierra el modal
+        obtenerPerfiles();
+    }
+};
+
+
+
+
+const borrarPerfil = async (perfilId: number): Promise<void> => {
+    try {
+        await useApi.delete(`/api/v1/perfiles/${perfilId}`);
+        perfiles.value = perfiles.value.filter(p => p.perf_id !== perfilId);
+        Swal.fire('Perfil eliminado', 'El perfil ha sido eliminado correctamente', 'success');
+    } catch (error) {
+        console.error('Error eliminando el perfil:', error);
+        Swal.fire('Error', 'No se pudo eliminar el perfil', 'error');
+    }
+};
 
 
 
