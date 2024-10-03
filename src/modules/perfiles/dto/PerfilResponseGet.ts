@@ -10,5 +10,6 @@ export interface PerfilResponse {
     perf_salario_maximo: string;
     perf_fecha_creacion: string;
     perf_fecha_actualizacion: string;
+    opciones?: string[];
   }
   

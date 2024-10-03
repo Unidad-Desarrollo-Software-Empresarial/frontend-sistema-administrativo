@@ -157,39 +157,17 @@
                                                 </div>
                                             </div>
 
-                                            <!-- Componentes del perfil -->
+                                            <!-- Componente dinámico para los componentes del perfil -->
                                             <div>
                                                 <h4 class="text-lg font-semibold text-gray-800 mb-4">Componentes</h4>
                                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                                                    <label
+                                                    <label v-for="componente in componentes" :key="componente.Id"
                                                         class="flex items-center p-3 border border-gray-200 rounded-lg hover:shadow-md transition-shadow duration-200 ease-in-out">
-                                                        <input type="checkbox" v-model="opciones" value="disc"
-                                                            class="form-checkbox text-orange-500 mr-3">
-                                                        <span class="text-gray-800">DISC</span>
-                                                    </label>
-                                                    <label
-                                                        class="flex items-center p-3 border border-gray-200 rounded-lg hover:shadow-md transition-shadow duration-200 ease-in-out">
-                                                        <input type="checkbox" v-model="opciones" value="curriculum"
-                                                            class="form-checkbox text-orange-500 mr-3">
-                                                        <span class="text-gray-800">CURRICULUM</span>
-                                                    </label>
-                                                    <label
-                                                        class="flex items-center p-3 border border-gray-200 rounded-lg hover:shadow-md transition-shadow duration-200 ease-in-out">
-                                                        <input type="checkbox" v-model="opciones" value="conocimiento"
-                                                            class="form-checkbox text-orange-500 mr-3">
-                                                        <span class="text-gray-800">CONOCIMIENTO</span>
-                                                    </label>
-                                                    <label
-                                                        class="flex items-center p-3 border border-gray-200 rounded-lg hover:shadow-md transition-shadow duration-200 ease-in-out">
-                                                        <input type="checkbox" v-model="opciones" value="competencias"
-                                                            class="form-checkbox text-orange-500 mr-3">
-                                                        <span class="text-gray-800">COMPETENCIAS</span>
-                                                    </label>
-                                                    <label
-                                                        class="flex items-center p-3 border border-gray-200 rounded-lg hover:shadow-md transition-shadow duration-200 ease-in-out">
-                                                        <input type="checkbox" v-model="opciones" value="video"
-                                                            class="form-checkbox text-orange-500 mr-3">
-                                                        <span class="text-gray-800">VIDEO ENTREVISTA</span>
+                                                        <input type="checkbox" v-model="opcionesEditar"
+                                                            :value="componente['Item Código']"
+                                                            class="form-checkbox text-orange-500 mr-3" />
+                                                        <span class="text-gray-800">{{ componente['Item Nombre']
+                                                            }}</span> <!-- Mostramos el 'Item Nombre' -->
                                                     </label>
                                                 </div>
                                             </div>
@@ -277,39 +255,17 @@
                                         </div>
                                     </div>
 
-                                    <!-- Componentes del perfil -->
+                                    <!-- Componente dinámico para los componentes del perfil -->
                                     <div>
                                         <h4 class="text-lg font-semibold text-gray-800 mb-4">Componentes</h4>
                                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                                            <label
+                                            <label v-for="componente in componentes" :key="componente.Id"
                                                 class="flex items-center p-3 border border-gray-200 rounded-lg hover:shadow-md transition-shadow duration-200 ease-in-out">
-                                                <input type="checkbox" v-model="opcionesEditar" value="disc"
-                                                    class="form-checkbox text-orange-500 mr-3">
-                                                <span class="text-gray-800">DISC</span>
-                                            </label>
-                                            <label
-                                                class="flex items-center p-3 border border-gray-200 rounded-lg hover:shadow-md transition-shadow duration-200 ease-in-out">
-                                                <input type="checkbox" v-model="opcionesEditar" value="curriculum"
-                                                    class="form-checkbox text-orange-500 mr-3">
-                                                <span class="text-gray-800">CURRICULUM</span>
-                                            </label>
-                                            <label
-                                                class="flex items-center p-3 border border-gray-200 rounded-lg hover:shadow-md transition-shadow duration-200 ease-in-out">
-                                                <input type="checkbox" v-model="opcionesEditar" value="conocimiento"
-                                                    class="form-checkbox text-orange-500 mr-3">
-                                                <span class="text-gray-800">CONOCIMIENTO</span>
-                                            </label>
-                                            <label
-                                                class="flex items-center p-3 border border-gray-200 rounded-lg hover:shadow-md transition-shadow duration-200 ease-in-out">
-                                                <input type="checkbox" v-model="opcionesEditar" value="competencias"
-                                                    class="form-checkbox text-orange-500 mr-3">
-                                                <span class="text-gray-800">COMPETENCIAS</span>
-                                            </label>
-                                            <label
-                                                class="flex items-center p-3 border border-gray-200 rounded-lg hover:shadow-md transition-shadow duration-200 ease-in-out">
-                                                <input type="checkbox" v-model="opcionesEditar" value="video"
-                                                    class="form-checkbox text-orange-500 mr-3">
-                                                <span class="text-gray-800">VIDEO ENTREVISTA</span>
+                                                <input type="checkbox" v-model="opcionesEditar"
+                                                    :value="componente['Item Código']"
+                                                    class="form-checkbox text-orange-500 mr-3" />
+                                                <span class="text-gray-800">{{ componente['Item Nombre'] }}</span>
+                                                <!-- Mostramos el 'Item Nombre' -->
                                             </label>
                                         </div>
                                     </div>
@@ -336,7 +292,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import DashboardLayout from '@/modules/dashboard/layouts/DashboardLayout.vue';
 import { usePerfilStore } from '@/stores/use-perfil.store';
@@ -344,20 +300,19 @@ import Swal from 'sweetalert2';
 import { useGuardarPerfil } from '@/modules/perfiles/composables/customDataTableAgregarPerfilesModal';
 import { useApi } from '@/composables/use-api';
 import type { PerfilResponse } from '@/modules/perfiles/dto/PerfilResponseGet';
-
+import { useConsultarItemCatalogo } from '@/modules/perfiles/composables/customDataTableComponentsResponse';
+import type { ItemCatalogo } from '@/modules/perfiles/dto/itemCatalogo.dto';
 
 const router = useRouter();
 const guardarPerfil = useGuardarPerfil();
 const mostrarModal = ref(false);
 const nombre = ref('');
 const nivel = ref('');
-// const perfilActual = ref<PerfilResponse | null>(null);
 const opciones = ref<string[]>([]);
 const mensajeError = ref('');
 
 const perfilStore = usePerfilStore();
 perfilStore.setPerfil(nombre.value, nivel.value, opciones.value);
-console.log(opciones.value)
 
 const obtenerPerfiles = async () => {
     try {
@@ -386,14 +341,9 @@ const cerrarModal = () => {
     mostrarModal.value = false;
 };
 
-//Guardar datos del perfil creado
-
-
-
+// Guardar datos del perfil creado
 const guardar = async () => {
-
     const usuarioId = localStorage.getItem('usuarioId');
-
 
     // Validaciones
     if (!nombre.value) {
@@ -427,7 +377,8 @@ const guardar = async () => {
     const perfilDto = {
         perf_nombre: nombre.value,
         perf_nivel_contribucion: nivel.value,
-        usu_id: Number(usuarioId), // Cambia este valor con el ID del usuario real
+        usu_id: Number(usuarioId),
+        opciones: opciones.value, // Asegúrate de enviar las opciones
     };
 
     try {
@@ -450,19 +401,14 @@ const guardar = async () => {
     }
 };
 
-
 const perfiles = ref<PerfilResponse[]>([]);
 
-
-onMounted(async () => {
-    await obtenerPerfiles(); // Llama a la función al montar el componente
-});
-
-const idPerfil = ref<number>(0); // Asegúrate de inicializar con un valor por defecto
+const idPerfil = ref<number>(0);
+const opcionesEditar = ref<string[]>([]);
 const mostrarModalEditar = ref(false);
 const nombreEditar = ref('');
 const nivelEditar = ref('');
-const opcionesEditar = ref<string[]>([]);
+const modoCreacion = ref(false); // Modo de creación
 
 // Función para abrir el modal de edición
 const abrirModalEditar = (perfil: PerfilResponse) => {
@@ -470,7 +416,17 @@ const abrirModalEditar = (perfil: PerfilResponse) => {
     mostrarModalEditar.value = true;
     nombreEditar.value = perfil.perf_nombre;
     nivelEditar.value = perfil.perf_nivel_contribucion;
-    // opcionesEditar.value = perfil.opciones || []; // Asigna las opciones del perfil
+    opcionesEditar.value = perfil.opciones || []; // Asigna las opciones del perfil
+    modoCreacion.value = false; // Establece modo de edición
+};
+
+// Función para abrir el modal de creación
+const abrirModalCrear = () => {
+    mostrarModalEditar.value = true;
+    nombreEditar.value = '';
+    nivelEditar.value = '';
+    opcionesEditar.value = []; // Limpia las opciones porque es un nuevo perfil
+    modoCreacion.value = true; // Establece modo de creación
 };
 
 // Función para cerrar el modal de edición
@@ -478,17 +434,9 @@ const cerrarModalEditar = () => {
     mostrarModalEditar.value = false;
 };
 
-
-
+// Guardar edición
 const guardarEdicion = async () => {
     const usuarioId = localStorage.getItem('usuarioId');
-
-    console.log('Guardando edición...'); // Para verificar que la función se está llamando
-    console.log('ID de Perfil:', idPerfil.value); // Verifica que el ID esté definido
-    console.log('Nombre Editar:', nombreEditar.value);
-    console.log('Nivel Editar:', nivelEditar.value);
-    console.log('Opciones Editar:', opcionesEditar.value);
-    console.log('Id usuario:', usuarioId);
 
     // Validaciones similares a las de guardar
     if (!nombreEditar.value) {
@@ -518,17 +466,16 @@ const guardarEdicion = async () => {
         return;
     }
 
-    // Cuerpo de la solicitud, enviando solo los campos que deseas actualizar
+    // Cuerpo de la solicitud
     const perfilDto = {
         perf_nombre: nombreEditar.value,
         perf_nivel_contribucion: nivelEditar.value,
         usu_id: Number(usuarioId),
-        // Agrega otros campos si es necesario
+        opciones: opcionesEditar.value, // Envío de opciones editadas
     };
 
     try {
-        // Cambiar aquí a PATCH
-        await useApi.patch(`/api/v1/perfiles/${idPerfil.value}`, perfilDto); // Llama a la API para actualizar el perfil
+        await useApi.patch(`/api/v1/perfiles/${idPerfil.value}`, perfilDto);
 
         Swal.fire({
             icon: 'success',
@@ -536,7 +483,7 @@ const guardarEdicion = async () => {
             text: 'El perfil se actualizó correctamente.',
         });
     } catch (error) {
-        console.error('Error al actualizar el perfil:', error); // Para ver más detalles del error
+        console.error('Error al actualizar el perfil:', error);
         Swal.fire({
             icon: 'error',
             title: 'Error',
@@ -547,9 +494,6 @@ const guardarEdicion = async () => {
         obtenerPerfiles();
     }
 };
-
-
-
 
 const borrarPerfil = async (perfilId: number): Promise<void> => {
     try {
@@ -562,8 +506,40 @@ const borrarPerfil = async (perfilId: number): Promise<void> => {
     }
 };
 
+// Consultar componentes
+const query = useConsultarItemCatalogo();
+const catalogoCodigo = 'COMP';
+const componentes = ref<ItemCatalogo[]>([]);
 
+// Función para cargar los componentes
+const cargarComponentes = async () => {
+    try {
+        const response = await query.mutateAsync(catalogoCodigo);
+        componentes.value = response;
+    } catch (error) {
+        console.error('Error al cargar los componentes del catálogo:', error);
+    }
+};
 
+// Resetear selección
+const resetearSeleccion = () => {
+    opcionesEditar.value = []; // Limpia las opciones seleccionadas
+};
+
+// Observar el estado del modal
+watch(mostrarModalEditar, (nuevoValor) => {
+    if (nuevoValor && modoCreacion.value) {
+        resetearSeleccion(); // Limpia las opciones solo si es modo de creación
+    }
+});
+
+// Montar el componente
+onMounted(async () => {
+    await obtenerPerfiles();
+    cargarComponentes(); // Llama a la función al montar el componente
+});
 </script>
+
+
 
 <style scoped></style>
