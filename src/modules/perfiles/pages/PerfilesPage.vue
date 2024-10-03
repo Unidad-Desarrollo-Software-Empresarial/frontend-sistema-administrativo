@@ -351,7 +351,7 @@ const guardarPerfil = useGuardarPerfil();
 const mostrarModal = ref(false);
 const nombre = ref('');
 const nivel = ref('');
-const perfilActual = ref<PerfilResponse | null>(null);
+// const perfilActual = ref<PerfilResponse | null>(null);
 const opciones = ref<string[]>([]);
 const mensajeError = ref('');
 

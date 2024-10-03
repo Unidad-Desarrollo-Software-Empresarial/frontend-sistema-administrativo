@@ -64,6 +64,7 @@ export const useAutenticacionStore = defineStore('autenticacion', () => {
     localStorage.removeItem('usuarioId');
     localStorage.removeItem('usuario');
     localStorage.removeItem('token');
+    localStorage.removeItem('rutas');
   };
 
   const updateRutas = (rutasParam: any) => {

@@ -5,6 +5,7 @@ const routes: Array<RouteRecordRaw> = [
         path: '/competencia',
         name: 'competencia',
         component: () => import('./pages/CompetenciasPage.vue'),
+        meta: { requiresAuth: true }, 
     },
     
 ];

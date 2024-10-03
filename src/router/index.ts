@@ -26,17 +26,18 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
+  const isAuthenticated = !!localStorage.getItem('token'); // Verifica si el token está presente
   if (to.matched.some((record) => record.meta.requiresAuth)) {
-    const autenticacionLocalStorage = JSON.parse(localStorage.getItem('autenticacion') || '{}');
-    if (!autenticacionLocalStorage['loginStatus']) {
-      next({ name: 'login' });
+    if (!isAuthenticated) {
+      next({ name: 'login' }); // Redirige al login si no está autenticado
     } else {
-      next();
+      next(); // Permitir el acceso a la ruta
     }
   } else {
-    next();
+    next(); // Permitir el acceso si no requiere autenticación
   }
 });
+
 
 
 export default router;
