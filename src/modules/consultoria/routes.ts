@@ -2,6 +2,7 @@ import type { RouteRecordRaw } from 'vue-router';
 
 const routes: Array<RouteRecordRaw> = [
     {
+        /* xd */
         path: '/listado-clientes',
         name: 'listadoCliente',
         component: () => import('./pages/ListadoClientes.vue'),
