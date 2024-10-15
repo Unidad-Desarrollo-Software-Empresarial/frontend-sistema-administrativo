@@ -2,6 +2,16 @@
   <DashboardLayout>
     <div class="p-6">
       <h2 class="text-2xl font-bold mb-4">Clientes</h2>
+
+      <!-- Elemento Búsqueda -->
+      <input
+        type="text"
+        v-model="searchTerm"
+        placeholder="Buscar..."
+        class="mb-4 p-2 border rounded"
+      />
+
+      <!-- Start Table -->
       <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200">
           <thead class="bg-gray-50">
@@ -57,7 +67,7 @@
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
-            <tr v-for="cliente in clientes" :key="cliente.Ruc">
+            <tr v-for="cliente in clientesPaginados" :key="cliente.Ruc">
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="text-sm text-gray-900">{{ cliente.Empresa }}</div>
               </td>
@@ -74,7 +84,7 @@
                 <div class="text-sm text-gray-500">{{ cliente.Teléfono }}</div>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {{ obtenerNombreTipoEmpresa(cliente["Tipo de empresa"]) }}
+                {{ obtenerNombreTipoEmpresa(cliente['Tipo de empresa']) }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 {{ obtenerNombreAccion(cliente.Acción) }}
@@ -97,63 +107,105 @@
           </tbody>
         </table>
       </div>
+      <!-- End Table -->
+
+      <!-- Start  Pagination -->
+      <div class="mt-4">
+        <button @click="currentPage--" :disabled="currentPage === 1">Anterior</button>
+        <span>{{ currentPage }} de {{ totalPages }}</span>
+        <button @click="currentPage++" :disabled="currentPage === totalPages">Siguiente</button>
+      </div>
+      <!-- End Pagination -->
     </div>
   </DashboardLayout>
 </template>
-
+<!-- Start Script -->
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
-import { useApi } from "@/composables/use-api";
-import DashboardLayout from "@/modules/dashboard/layouts/DashboardLayout.vue";
+import { onMounted, ref, computed, watch } from 'vue';
+import { useApi } from '@/composables/use-api';
+import DashboardLayout from '@/modules/dashboard/layouts/DashboardLayout.vue';
 
 const clientes = ref([]);
+const searchTerm = ref('');
+const currentPage = ref(1);
+const pageSize = ref(10); // Número de elementos por página
 
-// Ejemplo de funciones para obtener los nombres de tipo de empresa y acción
+// Obtener los nombres de tipo de empresa y acción
 const obtenerNombreTipoEmpresa = (tipoId) => {
-  // Aquí deberías obtener el nombre del tipo de empresa a partir del ID
-  // Puedes usar un objeto, un array o una función que consulte una API
   const tiposEmpresa = {
-    1: "Tipo 1",
-    2: "Tipo 2",
+    1: 'Tipo 1',
+    2: 'Tipo 2',
     // ...
   };
-  return tiposEmpresa[tipoId] || "Desconocido";
+  return tiposEmpresa[tipoId] || 'Desconocido';
 };
 
 const obtenerNombreAccion = (accionId) => {
-  // Aquí deberías obtener el nombre de la acción a partir del ID
   const acciones = {
-    1: "Acción 1",
-    2: "Acción 2",
+    1: 1,
+    2: 2,
     // ...
   };
-  return acciones[accionId] || "Desconocida";
+  return acciones[accionId] || 'Desconocida';
 };
 
 const editarCliente = (id) => {
   // Redirigir a la página de edición con el ID del cliente
   // Por ejemplo: this.$router.push(`/clientes/${id}/editar`);
-  console.log("Editar cliente con ID:", id);
+  console.log('Editar cliente con ID:', id);
 };
 
 const eliminarCliente = (id) => {
   // Mostrar una confirmación y eliminar el cliente con el ID
-  if (confirm("¿Estás seguro de que quieres eliminar este cliente?")) {
+  if (confirm('¿Estás seguro de que quieres eliminar este cliente?')) {
     // Llamar a la API para eliminar el cliente
     // Por ejemplo: useApi.delete(`/clientes/${id}`)
-    console.log("Eliminar cliente con ID:", id);
+    console.log('Eliminar cliente con ID:', id);
   }
 };
 
+/* Start Filtro  de búsqueda */
+
+const clientesFiltrados = computed(() => {
+  if (!searchTerm.value) {
+    return clientes.value;
+  }
+  const term = searchTerm.value.toLowerCase();
+  return clientes.value.filter((cliente) => {
+    return (
+      cliente.Empresa.toLowerCase().includes(term) ||
+      cliente.Ruc.toLowerCase().includes(term) ||
+      cliente.Contacto.toLowerCase().includes(term) ||
+      cliente.Correo.toLowerCase().includes(term) ||
+      cliente.Teléfono.toLowerCase().includes(term) ||
+      obtenerNombreTipoEmpresa(cliente['Tipo de empresa']).toLowerCase().includes(term) ||
+      obtenerNombreAccion(cliente.Acción).toLowerCase().includes(term)
+    );
+  });
+});
+/* End Filtro de búsqueda */
+
+const totalPages = computed(() => Math.ceil(clientesFiltrados.value.length / pageSize.value));
+
+const clientesPaginados = computed(() => {
+  const startIndex = (currentPage.value - 1) * pageSize.value;
+  const endIndex = startIndex + pageSize.value;
+  return clientesFiltrados.value.slice(startIndex, endIndex);
+});
+
+watch(currentPage, () => {});
+
+watch(searchTerm, () => {
+  currentPage.value = 1; // Reiniciar la página al cambiar el término de búsqueda
+});
+
 onMounted(async () => {
   try {
-    const response = await useApi.get(
-      "/api/v1/consultoria/consultoria-empresa"
-    );
+    const response = await useApi.get('/api/v1/consultoria/consultoria-empresa');
     clientes.value = response.data;
   } catch (error) {
     console.error(error);
-    // Manejar el error, mostrar un mensaje al usuario, etc.
   }
 });
 </script>
+<!-- End Script -->
