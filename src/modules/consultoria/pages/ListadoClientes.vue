@@ -142,8 +142,8 @@ const obtenerNombreTipoEmpresa = (tipoId) => {
 
 const obtenerNombreAccion = (accionId) => {
   const acciones = {
-    1: 1,
-    2: 2,
+    1: 'Acción 1',
+    2: 'Acción 2',
     // ...
   };
   return acciones[accionId] || 'Desconocida';
