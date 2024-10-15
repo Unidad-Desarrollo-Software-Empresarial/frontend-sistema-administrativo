@@ -16,9 +16,12 @@
   "dependencies": {
     "@tanstack/vue-query": "^5.51.17",
     "axios": "^1.7.3",
+    "datatables.net": "^2.1.8",
+    "datatables.net-vue3": "^3.0.2",
     "flowbite": "^2.4.1",
     "pinia": "^2.2.1",
     "pinia-plugin-persistedstate": "^3.2.1",
+    "sweetalert2": "^11.14.3",
     "vue": "^3.4.29",
     "vue-router": "^4.3.3"
   },
