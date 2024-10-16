@@ -52,12 +52,14 @@
               >
                 Tipo de empresa
               </th>
-              <th
+
+              <!-- ID -->
+              <!-- <th
                 scope="col"
                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
                 Acción
-              </th>
+              </th> -->
               <th
                 scope="col"
                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -86,9 +88,12 @@
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 {{ obtenerNombreTipoEmpresa(cliente['Tipo de empresa']) }}
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {{ obtenerNombreAccion(cliente.Acción) }}
-              </td>
+
+              <!-- ID -->
+              <!-- <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {{ (cliente.Acción) }}
+              </td> -->
+
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 <button
                   class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded mr-2"
