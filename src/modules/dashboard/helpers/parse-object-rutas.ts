@@ -27,7 +27,7 @@ export const parseObjectRutas = async (router: Router) => {
       router.addRoute({
         path: ruta.ruta_url,
         name: ruta.ruta_ruta,
-        component: () => import(`../../../${ruta.ruta_component}`), // Importar dinámicamente el componente
+        component: () => import(/* @vite-ignore */ `../../../${ruta.ruta_component}`), // Importar dinámicamente el componente
         meta: {
           requiresAuth: true,
           transition: 'fade',
