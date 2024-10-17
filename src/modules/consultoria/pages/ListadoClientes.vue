@@ -183,8 +183,7 @@ const clientesFiltrados = computed(() => {
       cliente.Contacto.toLowerCase().includes(term) ||
       cliente.Correo.toLowerCase().includes(term) ||
       cliente.Teléfono.toLowerCase().includes(term) ||
-      obtenerNombreTipoEmpresa(cliente['Tipo de empresa']).toLowerCase().includes(term) ||
-      obtenerNombreAccion(cliente.Acción).toLowerCase().includes(term)
+      obtenerNombreTipoEmpresa(cliente['Tipo de empresa']).toLowerCase().includes(term)
     );
   });
 });
